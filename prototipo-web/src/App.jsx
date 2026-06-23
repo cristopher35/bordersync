@@ -180,7 +180,9 @@ function LoginScreen({ onSelectRole }) {
 
   return (
     <div style={{
-      minHeight: '100vh', background: `linear-gradient(180deg, ${COLORS.navy} 0%, #08294B 100%)`,
+      minHeight: '100vh',
+      backgroundImage: `linear-gradient(180deg, rgba(8,33,61,0.88) 0%, rgba(8,33,61,0.94) 100%), url('/fondo-paso-fronterizo.jpg')`,
+      backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat',
       display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '48px 16px',
       fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
     }}>
