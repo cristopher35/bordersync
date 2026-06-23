@@ -305,18 +305,25 @@ function LoginScreen({ onSelectRole }) {
       display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '48px 16px',
       fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
     }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6,
+        background: 'rgba(8,33,61,0.55)', padding: '10px 18px', borderRadius: 12,
+      }}>
         <Logo size={40} />
         <div>
-          <div style={{ color: '#fff', fontWeight: 700, fontSize: 20, letterSpacing: -0.3, textShadow: '0 2px 8px rgba(0,0,0,0.65)' }}>BorderSync</div>
-          <div style={{ color: 'rgba(255,255,255,0.92)', fontSize: 12, textShadow: '0 1px 6px rgba(0,0,0,0.65)' }}>Sistema de Gestión Aduanera Inteligente</div>
+          <div style={{ color: '#fff', fontWeight: 700, fontSize: 20, letterSpacing: -0.3 }}>BorderSync</div>
+          <div style={{ color: 'rgba(255,255,255,0.92)', fontSize: 12 }}>Sistema de Gestión Aduanera Inteligente</div>
         </div>
       </div>
 
       <div style={{ marginTop: 36, width: '100%', maxWidth: 880 }}>
         {!showAdminLogin && (
           <>
-            <p style={{ textAlign: 'center', color: 'rgba(255,255,255,0.95)', fontSize: 14, marginBottom: 22, textShadow: '0 1px 6px rgba(0,0,0,0.7)' }}>
+            <p style={{
+              textAlign: 'center', color: '#fff', fontSize: 14, marginBottom: 22,
+              background: 'rgba(8,33,61,0.55)', padding: '8px 16px', borderRadius: 8, display: 'inline-block',
+              width: '100%', boxSizing: 'border-box',
+            }}>
               {t.selectRole}
             </p>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 14 }}>
@@ -352,7 +359,10 @@ function LoginScreen({ onSelectRole }) {
                 );
               })}
             </div>
-            <p style={{ textAlign: 'center', color: 'rgba(255,255,255,0.75)', fontSize: 11.5, marginTop: 20, textShadow: '0 1px 5px rgba(0,0,0,0.7)' }}>
+            <p style={{
+              textAlign: 'center', color: '#fff', fontSize: 11.5, marginTop: 20,
+              background: 'rgba(8,33,61,0.55)', padding: '10px 16px', borderRadius: 8, lineHeight: 1.5,
+            }}>
               {t.accessNote}
             </p>
           </>
@@ -397,7 +407,11 @@ function LoginScreen({ onSelectRole }) {
                 </button>
               </form>
             </Card>
-            <p style={{ textAlign: 'center', color: 'rgba(255,255,255,0.7)', fontSize: 11, marginTop: 14, textShadow: '0 1px 5px rgba(0,0,0,0.7)' }}>
+            <p style={{
+              textAlign: 'center', color: '#fff', fontSize: 11, marginTop: 14,
+              background: 'rgba(8,33,61,0.55)', padding: '6px 14px', borderRadius: 8,
+              width: 'fit-content', margin: '14px auto 0',
+            }}>
               Clave de demostración: admin2026
             </p>
           </div>
