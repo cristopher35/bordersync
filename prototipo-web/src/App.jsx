@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, createContext, useContext } from 'react';
 import {
   LogIn, LogOut, User, Truck, FileText, PawPrint, Search, BarChart3,
   Users, Settings, ShieldCheck, ClipboardCheck, AlertTriangle, CheckCircle2,
   XCircle, Clock, ChevronRight, Plus, Download, Eye, Lock, Globe2, Bell,
-  LayoutDashboard, FolderOpen, Activity, Database
+  LayoutDashboard, FolderOpen, Activity, Database, Languages, Type, X, Minus
 } from 'lucide-react';
 
 const COLORS = {
@@ -21,6 +21,119 @@ const COLORS = {
   amber: '#B7791F',
   amberLight: '#FBF1DD',
 };
+
+const FONT_SCALES = { sm: 0.92, md: 1, lg: 1.12 };
+
+const TEXTS = {
+  es: {
+    selectRole: 'Selecciona un perfil para ver el contenido y las funciones disponibles para ese rol',
+    accessNote: 'En la versión final cada perfil tendrá usuario y contraseña asignados por el administrador. Aquí el acceso es libre, salvo el panel de Administrador, que queda restringido conforme al control de acceso basado en roles (RBAC) definido en la ERS.',
+  },
+  en: {
+    selectRole: 'Select a profile to preview the content and functions available for that role',
+    accessNote: 'In the final version each profile will have a username and password assigned by the administrator. Here access is open, except for the Administrator panel, which remains restricted per the role-based access control (RBAC) defined in the SRS.',
+  },
+};
+
+const AccessibilityContext = createContext({
+  fontScale: 'md', setFontScale: () => {}, language: 'es', setLanguage: () => {}, t: TEXTS.es,
+});
+
+function AccessibilityProvider({ children }) {
+  const [fontScale, setFontScale] = useState('md');
+  const [language, setLanguage] = useState('es');
+  const t = TEXTS[language] || TEXTS.es;
+  return (
+    <AccessibilityContext.Provider value={{ fontScale, setFontScale, language, setLanguage, t }}>
+      <div style={{ fontSize: `${FONT_SCALES[fontScale] * 100}%` }}>
+        {children}
+      </div>
+    </AccessibilityContext.Provider>
+  );
+}
+
+function AccessibilityMenu() {
+  const [open, setOpen] = useState(false);
+  const { fontScale, setFontScale, language, setLanguage } = useContext(AccessibilityContext);
+
+  return (
+    <>
+      <button
+        onClick={() => setOpen((v) => !v)}
+        aria-label="Ajustes de accesibilidad"
+        style={{
+          position: 'fixed', top: 20, right: 20, zIndex: 50, width: 46, height: 46, borderRadius: '50%',
+          background: '#fff', border: `1px solid ${COLORS.border}`, boxShadow: '0 4px 14px rgba(0,0,0,0.18)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
+        }}
+      >
+        <Settings size={20} color={COLORS.navy} />
+      </button>
+
+      {open && (
+        <div style={{
+          position: 'fixed', top: 76, right: 20, zIndex: 50, width: 280, background: '#fff',
+          borderRadius: 14, boxShadow: '0 10px 30px rgba(0,0,0,0.22)', border: `1px solid ${COLORS.border}`,
+          padding: 18, fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
+        }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+            <span style={{ fontSize: 14, fontWeight: 700, color: COLORS.ink }}>Ajustes de accesibilidad</span>
+            <button onClick={() => setOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: COLORS.inkSoft, display: 'flex' }}>
+              <X size={16} />
+            </button>
+          </div>
+
+          <div style={{ marginBottom: 16 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12.5, fontWeight: 600, color: COLORS.inkSoft, marginBottom: 8 }}>
+              <Type size={14} /> Tamaño de letra
+            </div>
+            <div style={{ display: 'flex', gap: 6 }}>
+              {[['sm', 'A-'], ['md', 'A'], ['lg', 'A+']].map(([key, label]) => (
+                <button
+                  key={key}
+                  onClick={() => setFontScale(key)}
+                  style={{
+                    flex: 1, padding: '8px 0', borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: 'pointer',
+                    border: `1px solid ${fontScale === key ? COLORS.navy : COLORS.border}`,
+                    background: fontScale === key ? COLORS.navy : '#fff',
+                    color: fontScale === key ? '#fff' : COLORS.ink,
+                  }}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12.5, fontWeight: 600, color: COLORS.inkSoft, marginBottom: 8 }}>
+              <Languages size={14} /> Idioma
+            </div>
+            <div style={{ display: 'flex', gap: 6 }}>
+              {[['es', 'Español'], ['en', 'English']].map(([key, label]) => (
+                <button
+                  key={key}
+                  onClick={() => setLanguage(key)}
+                  style={{
+                    flex: 1, padding: '8px 6px', borderRadius: 8, fontSize: 12.5, fontWeight: 600, cursor: 'pointer',
+                    border: `1px solid ${language === key ? COLORS.navy : COLORS.border}`,
+                    background: language === key ? COLORS.navy : '#fff',
+                    color: language === key ? '#fff' : COLORS.ink,
+                  }}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+            <p style={{ fontSize: 11, color: COLORS.inkSoft, marginTop: 8, lineHeight: 1.4 }}>
+              RNF24 — disponible en español; otros idiomas se incorporarán en futuras versiones.
+            </p>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
 
 const ROLES = [
   {
@@ -51,9 +164,10 @@ const ROLES = [
     id: 'admin',
     label: 'Administrador del Sistema',
     nombre: 'Rodrigo Pizarro Núñez',
-    sub: 'TI-0042 · Acceso total',
+    sub: 'Acceso restringido — requiere clave',
     icon: Settings,
     accent: COLORS.amber,
+    protected: true,
   },
 ];
 
@@ -157,25 +271,30 @@ function Toast({ msg, tone, onClose }) {
 }
 
 function LoginScreen({ onSelectRole }) {
-  const [step, setStep] = useState('credentials');
-  const [selected, setSelected] = useState(null);
-  const [user, setUser] = useState('');
-  const [pass, setPass] = useState('');
-  const [error, setError] = useState('');
+  const [showAdminLogin, setShowAdminLogin] = useState(false);
+  const [adminKey, setAdminKey] = useState('');
+  const [adminError, setAdminError] = useState('');
+  const { t } = useContext(AccessibilityContext);
+  const adminRole = ROLES.find((r) => r.protected);
+  const visibleRoles = ROLES.filter((r) => !r.protected);
 
-  function pickRole(role) {
-    setSelected(role);
-    setStep('login');
-    setError('');
+  function openAdminLogin() {
+    setShowAdminLogin(true);
+    setAdminKey('');
+    setAdminError('');
   }
 
-  function submitLogin(e) {
+  function submitAdminKey(e) {
     e.preventDefault();
-    if (!user.trim() || !pass.trim()) {
-      setError('Usuario o contraseña incorrectos');
+    if (adminKey.trim() === '') {
+      setAdminError('Ingresa la clave de administrador');
       return;
     }
-    onSelectRole(selected);
+    if (adminKey.trim() !== 'admin2026') {
+      setAdminError('Clave incorrecta');
+      return;
+    }
+    onSelectRole(adminRole);
   }
 
   return (
@@ -195,18 +314,18 @@ function LoginScreen({ onSelectRole }) {
       </div>
 
       <div style={{ marginTop: 36, width: '100%', maxWidth: 880 }}>
-        {step === 'credentials' && (
+        {!showAdminLogin && (
           <>
             <p style={{ textAlign: 'center', color: 'rgba(255,255,255,0.95)', fontSize: 14, marginBottom: 22, textShadow: '0 1px 6px rgba(0,0,0,0.7)' }}>
-              Prototipo funcional — selecciona un perfil de acceso para simular el inicio de sesión
+              {t.selectRole}
             </p>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 14 }}>
-              {ROLES.map((r) => {
+              {visibleRoles.map((r) => {
                 const Icon = r.icon;
                 return (
                   <button
                     key={r.id}
-                    onClick={() => pickRole(r)}
+                    onClick={() => onSelectRole(r)}
                     style={{
                       background: '#fff', border: 'none', borderRadius: 14, padding: '20px 18px',
                       textAlign: 'left', cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: 14,
@@ -227,60 +346,76 @@ function LoginScreen({ onSelectRole }) {
                       <div style={{ fontSize: 11, color: COLORS.inkSoft, marginTop: 2 }}>{r.sub}</div>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 13, fontWeight: 600, color: r.accent }}>
-                      Continuar <ChevronRight size={15} />
+                      Ver panel <ChevronRight size={15} />
                     </div>
                   </button>
                 );
               })}
             </div>
+            <p style={{ textAlign: 'center', color: 'rgba(255,255,255,0.75)', fontSize: 11.5, marginTop: 20, textShadow: '0 1px 5px rgba(0,0,0,0.7)' }}>
+              {t.accessNote}
+            </p>
           </>
         )}
 
-        {step === 'login' && selected && (
+        {showAdminLogin && (
           <div style={{ maxWidth: 380, margin: '0 auto' }}>
             <Card style={{ borderRadius: 16, border: 'none' }} padding="28px">
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
                 <div style={{
-                  width: 38, height: 38, borderRadius: 9, background: `${selected.accent}15`,
+                  width: 38, height: 38, borderRadius: 9, background: COLORS.amberLight,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}>
-                  <selected.icon size={19} color={selected.accent} />
+                  <Lock size={18} color={COLORS.amber} />
                 </div>
                 <div>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: COLORS.ink }}>{selected.label}</div>
-                  <div style={{ fontSize: 12, color: COLORS.inkSoft }}>Ingresa tus credenciales</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: COLORS.ink }}>Acceso restringido</div>
+                  <div style={{ fontSize: 12, color: COLORS.inkSoft }}>Administrador del Sistema</div>
                 </div>
               </div>
-              <form onSubmit={submitLogin}>
-                <Field label="USER">
-                  <input style={inputStyle} value={user} onChange={(e) => setUser(e.target.value)} placeholder="usuario.apellido" autoFocus />
+              <form onSubmit={submitAdminKey}>
+                <Field label="Clave de administrador">
+                  <input
+                    style={inputStyle} type="password" value={adminKey}
+                    onChange={(e) => setAdminKey(e.target.value)} placeholder="••••••••" autoFocus
+                  />
                 </Field>
-                <Field label="CONTRASEÑA">
-                  <input style={inputStyle} type="password" value={pass} onChange={(e) => setPass(e.target.value)} placeholder="••••••••" />
-                </Field>
-                {error && (
+                {adminError && (
                   <div style={{ color: COLORS.red, fontSize: 13, fontWeight: 600, marginBottom: 14, display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <AlertTriangle size={14} /> {error}
+                    <AlertTriangle size={14} /> {adminError}
                   </div>
                 )}
-                <Button type="submit" icon={LogIn} style={{ width: '100%', justifyContent: 'center' }}>
-                  Iniciar sesión
+                <Button type="submit" icon={Lock} style={{ width: '100%', justifyContent: 'center' }}>
+                  Acceder
                 </Button>
                 <button
                   type="button"
-                  onClick={() => setStep('credentials')}
+                  onClick={() => setShowAdminLogin(false)}
                   style={{ width: '100%', marginTop: 12, background: 'none', border: 'none', color: COLORS.inkSoft, fontSize: 13, cursor: 'pointer', fontFamily: 'inherit' }}
                 >
                   Volver a selección de perfil
                 </button>
               </form>
             </Card>
-            <p style={{ textAlign: 'center', color: 'rgba(255,255,255,0.5)', fontSize: 11, marginTop: 14 }}>
-              RF02 · Cualquier usuario/contraseña no vacíos inician sesión en este prototipo
+            <p style={{ textAlign: 'center', color: 'rgba(255,255,255,0.7)', fontSize: 11, marginTop: 14, textShadow: '0 1px 5px rgba(0,0,0,0.7)' }}>
+              Clave de demostración: admin2026
             </p>
           </div>
         )}
       </div>
+
+      <button
+        onClick={openAdminLogin}
+        aria-label="Acceso administrador del sistema"
+        title="Administrador del sistema"
+        style={{
+          position: 'fixed', bottom: 20, left: 76, zIndex: 50, width: 46, height: 46, borderRadius: '50%',
+          background: '#fff', border: `1px solid ${COLORS.border}`, boxShadow: '0 4px 14px rgba(0,0,0,0.18)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
+        }}
+      >
+        <Lock size={18} color={COLORS.amber} />
+      </button>
     </div>
   );
 }
@@ -907,18 +1042,26 @@ export default function App() {
   }
 
   if (!role) {
-    return <LoginScreen onSelectRole={handleLogin} />;
+    return (
+      <AccessibilityProvider>
+        <LoginScreen onSelectRole={handleLogin} />
+        <AccessibilityMenu />
+      </AccessibilityProvider>
+    );
   }
 
   const navItems = NAV_BY_ROLE[role.id];
 
   return (
-    <Shell role={role} navItems={navItems} active={active} setActive={setActive} onLogout={handleLogout}>
-      <Toast msg={toast?.msg} tone={toast?.tone} onClose={() => setToast(null)} />
-      {role.id === 'viajero' && <ViajeroDashboard active={active} notify={notify} />}
-      {role.id === 'aduanas' && <AduanasDashboard active={active} notify={notify} />}
-      {role.id === 'sag_pdi' && <SagPdiDashboard active={active} notify={notify} />}
-      {role.id === 'admin' && <AdminDashboard active={active} notify={notify} />}
-    </Shell>
+    <AccessibilityProvider>
+      <Shell role={role} navItems={navItems} active={active} setActive={setActive} onLogout={handleLogout}>
+        <Toast msg={toast?.msg} tone={toast?.tone} onClose={() => setToast(null)} />
+        {role.id === 'viajero' && <ViajeroDashboard active={active} notify={notify} />}
+        {role.id === 'aduanas' && <AduanasDashboard active={active} notify={notify} />}
+        {role.id === 'sag_pdi' && <SagPdiDashboard active={active} notify={notify} />}
+        {role.id === 'admin' && <AdminDashboard active={active} notify={notify} />}
+      </Shell>
+      <AccessibilityMenu />
+    </AccessibilityProvider>
   );
 }
