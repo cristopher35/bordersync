@@ -181,7 +181,7 @@ function LoginScreen({ onSelectRole }) {
   return (
     <div style={{
       minHeight: '100vh',
-      backgroundImage: `linear-gradient(180deg, rgba(8,33,61,0.88) 0%, rgba(8,33,61,0.94) 100%), url('/fondo-paso-fronterizo.jpg')`,
+      backgroundImage: `url('/fondo-paso-fronterizo.jpg')`,
       backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat',
       display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '48px 16px',
       fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
@@ -189,15 +189,15 @@ function LoginScreen({ onSelectRole }) {
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
         <Logo size={40} />
         <div>
-          <div style={{ color: '#fff', fontWeight: 700, fontSize: 20, letterSpacing: -0.3 }}>BorderSync</div>
-          <div style={{ color: 'rgba(255,255,255,0.65)', fontSize: 12 }}>Sistema de Gestión Aduanera Inteligente</div>
+          <div style={{ color: '#fff', fontWeight: 700, fontSize: 20, letterSpacing: -0.3, textShadow: '0 2px 8px rgba(0,0,0,0.65)' }}>BorderSync</div>
+          <div style={{ color: 'rgba(255,255,255,0.92)', fontSize: 12, textShadow: '0 1px 6px rgba(0,0,0,0.65)' }}>Sistema de Gestión Aduanera Inteligente</div>
         </div>
       </div>
 
       <div style={{ marginTop: 36, width: '100%', maxWidth: 880 }}>
         {step === 'credentials' && (
           <>
-            <p style={{ textAlign: 'center', color: 'rgba(255,255,255,0.75)', fontSize: 14, marginBottom: 22 }}>
+            <p style={{ textAlign: 'center', color: 'rgba(255,255,255,0.95)', fontSize: 14, marginBottom: 22, textShadow: '0 1px 6px rgba(0,0,0,0.7)' }}>
               Prototipo funcional — selecciona un perfil de acceso para simular el inicio de sesión
             </p>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 14 }}>
