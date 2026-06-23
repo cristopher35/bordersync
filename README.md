@@ -48,7 +48,9 @@ npm run preview
 
 ## Prototipo desplegado
 
-> Pendiente de despliegue — se actualizará este enlace una vez publicado en Vercel/Netlify.
+Disponible en: **https://bordersync.vercel.app**
+
+El despliegue se actualiza automáticamente con cada `push` a la rama `main`.
 
 ## Roles de prueba
 
