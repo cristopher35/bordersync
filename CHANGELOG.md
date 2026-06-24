@@ -19,6 +19,24 @@ formal), las versiones se mantienen en el rango `0.x.x`.
 
 ---
 
+## [Sin liberar]
+
+### Added
+- Informe de pruebas funcionales de la versión `0.1.0`, con resultados de
+  compilación, persistencia y cobertura por historia de usuario.
+- Flujo documentado para ramas, versionado, commits y evidencia obligatoria de
+  pruebas en cada versión futura.
+- Plantilla reutilizable para los informes de pruebas de nuevas versiones.
+- Trazabilidad de HU01 a HU14 corregida según los resultados reales de la auditoría.
+
+### Planeado
+- Persistencia de usuarios, trámites y cambios de estado para la versión `0.2.0`.
+- Autenticación y control de acceso real para HU01, HU02 y HU12.
+- Prototipo funcional **app móvil** (iOS / Android), equivalente en alcance al
+  prototipo web, adaptado a patrones de interacción móviles.
+
+---
+
 ## [0.1.0] - 2026-06-23
 
 ### Added
@@ -45,14 +63,6 @@ formal), las versiones se mantienen en el rango `0.x.x`.
   seguridad.
 - Identidad visual institucional aplicada conforme a RNF25 (paleta azul institucional,
   acentos semánticos para estados de aprobación, advertencia y error).
-
----
-
-## [Sin liberar] - próxima versión
-
-### Planeado
-- Prototipo funcional **app móvil** (iOS / Android), equivalente en alcance al
-  prototipo web, adaptado a patrones de interacción móviles.
 
 ---
 
