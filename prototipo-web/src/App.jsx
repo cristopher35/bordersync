@@ -340,6 +340,46 @@ function Toast({ msg, tone, onClose }) {
   );
 }
 
+function WelcomeScreen({ onContinue }) {
+  return (
+    <div style={{
+      minHeight: '100vh',
+      backgroundImage: `url('/fondo-paso-fronterizo.jpg')`,
+      backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat',
+      display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+      padding: '48px 16px', fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
+      textAlign: 'center',
+    }}>
+      <div style={{
+        background: 'rgba(8,33,61,0.55)', padding: '14px 28px', borderRadius: 14,
+        display: 'flex', alignItems: 'center', gap: 12, marginBottom: 28,
+      }}>
+        <Logo size={48} />
+        <div style={{ textAlign: 'left' }}>
+          <div style={{ color: '#fff', fontWeight: 700, fontSize: 26, letterSpacing: -0.5 }}>BorderSync</div>
+          <div style={{ color: 'rgba(255,255,255,0.92)', fontSize: 13 }}>Sistema de Gestión Aduanera Inteligente</div>
+        </div>
+      </div>
+
+      <div style={{
+        background: 'rgba(8,33,61,0.55)', padding: '24px 32px', borderRadius: 16,
+        maxWidth: 560,
+      }}>
+        <h1 style={{ color: '#fff', fontSize: 22, fontWeight: 700, margin: '0 0 10px' }}>
+          Bienvenido, viajero
+        </h1>
+        <p style={{ color: 'rgba(255,255,255,0.92)', fontSize: 15, lineHeight: 1.6, margin: '0 0 24px' }}>
+          Facilitamos tu cruce fronterizo para que sea más rápido, simple y seguro.
+          Completa tus trámites antes de llegar al paso fronterizo y reduce tu tiempo de espera.
+        </p>
+        <Button onClick={onContinue} style={{ width: '100%', justifyContent: 'center', fontSize: 15, padding: '12px 16px' }} icon={ChevronRight}>
+          Comenzar
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 function LoginScreen({ onSelectRole }) {
   const [showAdminLogin, setShowAdminLogin] = useState(false);
   const [adminKey, setAdminKey] = useState('');
@@ -1114,6 +1154,7 @@ const NAV_BY_ROLE = {
 };
 
 export default function App() {
+  const [welcomeDone, setWelcomeDone] = useState(false);
   const [role, setRole] = useState(null);
   const [active, setActive] = useState('inicio');
   const [toast, setToast] = useState(null);
@@ -1136,7 +1177,9 @@ export default function App() {
   return (
     <RegistryProvider>
       <AccessibilityProvider>
-        {!role ? (
+        {!welcomeDone ? (
+          <WelcomeScreen onContinue={() => setWelcomeDone(true)} />
+        ) : !role ? (
           <LoginScreen onSelectRole={handleLogin} />
         ) : (
           <Shell role={role} navItems={NAV_BY_ROLE[role.id]} active={active} setActive={setActive} onLogout={handleLogout}>
