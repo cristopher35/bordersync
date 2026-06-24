@@ -34,6 +34,9 @@ formal), las versiones se mantienen en el rango `0.x.x`.
 - Gestión persistente de usuarios, estados y roles desde el panel administrador.
 - Invalidación de acceso para cuentas bloqueadas y protección del administrador actual.
 - Seis pruebas automatizadas y prueba funcional integral de la versión `0.2.0`.
+- Imagen Docker de producción, health check de Spring Boot y Blueprint de Render.
+- Migración inicial Flyway para crear usuarios en PostgreSQL.
+- Guía de despliegue y conexión del backend público con Vercel.
 
 ### Planeado
 - Persistencia de trámites, vehículos y declaraciones para la versión `0.3.0`.

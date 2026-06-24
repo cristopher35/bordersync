@@ -53,6 +53,9 @@ memoria y quedan fuera del alcance de esta versión.
 | PF-207 | HU02/HU12 | Iniciar sesión con usuario bloqueado | Rechazar acceso | API informó que la cuenta está bloqueada | Aprobado |
 | PF-208 | HU02 | Fallar contraseña cinco veces | Bloquear durante 15 minutos | Prueba de integración confirmó estado HTTP 423 | Aprobado |
 | PF-209 | HU01 | Repetir correo registrado | Rechazar duplicado | Prueba de integración confirmó conflicto HTTP 409 | Aprobado |
+| PF-210 | Técnica | Consultar health check | Responder estado saludable | `/actuator/health` respondió `UP` | Aprobado |
+| PF-211 | Técnica | Empaquetar backend | Generar JAR ejecutable | `backend-0.2.0-SNAPSHOT.jar` generado | Aprobado |
+| PF-212 | Técnica | Validar configuración Render | YAML válido | `render.yaml` procesado sin errores sintácticos | Aprobado |
 
 ## Cobertura automatizada
 
@@ -84,10 +87,9 @@ esta versión.
 - El entorno local usa H2; PostgreSQL requiere activar el perfil `postgres`.
 - Los trámites y declaraciones todavía no se guardan en el backend.
 - No se implementaron recuperación de contraseña, MFA ni verificación de correo.
-- La configuración PostgreSQL usa actualización automática de esquema durante esta
-  fase de prototipo; antes de producción debe reemplazarse por migraciones versionadas.
+- H2 actualiza su esquema automáticamente durante el desarrollo local; el perfil
+  PostgreSQL utiliza migraciones Flyway versionadas.
 
 ## Decisión
 
 **Aprobada para integrar como incremento v0.2.0**, limitada a HU01, HU02 y HU12.
-

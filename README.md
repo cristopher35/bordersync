@@ -104,6 +104,8 @@ cualquier entorno compartido o desplegado.
   reglas para ramas, commits, pruebas y registro de versiones futuras.
 - [`docs/Plantilla_Pruebas_Funcionales.md`](./docs/Plantilla_Pruebas_Funcionales.md) —
   plantilla que debe copiarse y completarse para cada nueva versión.
+- [`docs/Despliegue_v0.2.0.md`](./docs/Despliegue_v0.2.0.md) — configuración de
+  Docker, PostgreSQL, Render y conexión con Vercel.
 
 ## Desarrollo de nuevas versiones
 
@@ -119,9 +121,14 @@ Para usar PostgreSQL se activa el perfil correspondiente y se definen las variab
 ```bash
 cd backend
 SPRING_PROFILES_ACTIVE=postgres \
-DB_URL=jdbc:postgresql://localhost:5432/bordersync \
+DB_HOST=localhost \
+DB_PORT=5432 \
+DB_NAME=bordersync \
 DB_USERNAME=bordersync \
 DB_PASSWORD=una-clave-segura \
 JWT_SECRET=un-secreto-de-al-menos-32-bytes \
 ./mvnw spring-boot:run
 ```
+
+Los archivos `.env.example` documentan todas las variables necesarias sin contener
+credenciales reales.
