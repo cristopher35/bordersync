@@ -221,6 +221,8 @@ const ROLES = [
     sub: 'Control y fiscalización',
     icon: ShieldCheck,
     accent: COLORS.navy,
+    protected: true,
+    accessKey: 'aduanas123',
   },
   {
     id: 'sag_pdi',
@@ -229,6 +231,8 @@ const ROLES = [
     sub: 'Control sanitario y migratorio',
     icon: ClipboardCheck,
     accent: COLORS.green,
+    protected: true,
+    accessKey: 'sagpdi123',
   },
   {
     id: 'admin',
@@ -238,6 +242,7 @@ const ROLES = [
     icon: Settings,
     accent: COLORS.amber,
     protected: true,
+    accessKey: 'admin123',
   },
 ];
 
@@ -381,30 +386,44 @@ function WelcomeScreen({ onContinue }) {
 }
 
 function LoginScreen({ onSelectRole }) {
-  const [showAdminLogin, setShowAdminLogin] = useState(false);
-  const [adminKey, setAdminKey] = useState('');
-  const [adminError, setAdminError] = useState('');
+  const [showStaffList, setShowStaffList] = useState(false);
+  const [pendingStaff, setPendingStaff] = useState(null);
+  const [staffKey, setStaffKey] = useState('');
+  const [staffError, setStaffError] = useState('');
   const { t } = useContext(AccessibilityContext);
-  const adminRole = ROLES.find((r) => r.protected);
-  const visibleRoles = ROLES.filter((r) => !r.protected);
+  const viajeroRole = ROLES.find((r) => r.id === 'viajero');
+  const staffRoles = ROLES.filter((r) => r.protected);
 
-  function openAdminLogin() {
-    setShowAdminLogin(true);
-    setAdminKey('');
-    setAdminError('');
+  function openStaffKeyForm(role) {
+    setPendingStaff(role);
+    setStaffKey('');
+    setStaffError('');
   }
 
-  function submitAdminKey(e) {
+  function backToStaffList() {
+    setPendingStaff(null);
+    setStaffKey('');
+    setStaffError('');
+  }
+
+  function backToPublic() {
+    setShowStaffList(false);
+    setPendingStaff(null);
+    setStaffKey('');
+    setStaffError('');
+  }
+
+  function submitStaffKey(e) {
     e.preventDefault();
-    if (adminKey.trim() === '') {
-      setAdminError('Ingresa la clave de administrador');
+    if (staffKey.trim() === '') {
+      setStaffError('Ingresa la clave de acceso');
       return;
     }
-    if (adminKey.trim() !== 'admin2026') {
-      setAdminError('Clave incorrecta');
+    if (staffKey.trim() !== pendingStaff.accessKey) {
+      setStaffError('Clave incorrecta');
       return;
     }
-    onSelectRole(adminRole);
+    onSelectRole(pendingStaff);
   }
 
   return (
@@ -426,75 +445,129 @@ function LoginScreen({ onSelectRole }) {
         </div>
       </div>
 
-      <div style={{ marginTop: 36, width: '100%', maxWidth: 880 }}>
-        {!showAdminLogin && (
+      <div style={{ marginTop: 36, width: '100%', maxWidth: 460 }}>
+
+        {!showStaffList && (
           <>
             <p style={{
               textAlign: 'center', color: '#fff', fontSize: 14, marginBottom: 22,
-              background: 'rgba(8,33,61,0.55)', padding: '8px 16px', borderRadius: 8, display: 'inline-block',
+              background: 'rgba(8,33,61,0.55)', padding: '8px 16px', borderRadius: 8,
               width: '100%', boxSizing: 'border-box',
             }}>
-              {t.selectRole}
+              Continúa como viajero para gestionar tu cruce fronterizo
             </p>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 14 }}>
-              {visibleRoles.map((r) => {
+            <button
+              onClick={() => onSelectRole(viajeroRole)}
+              style={{
+                background: '#fff', border: 'none', borderRadius: 14, padding: '24px 22px',
+                textAlign: 'left', cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: 16,
+                boxShadow: '0 8px 24px rgba(0,0,0,0.18)', transition: 'transform .15s', width: '100%',
+                boxSizing: 'border-box',
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-3px)'}
+              onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+            >
+              <div style={{
+                width: 50, height: 50, borderRadius: 12, background: `${viajeroRole.accent}15`,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <User size={26} color={viajeroRole.accent} />
+              </div>
+              <div>
+                <div style={{ fontSize: 17, fontWeight: 700, color: COLORS.ink, marginBottom: 3 }}>{viajeroRole.label}</div>
+                <div style={{ fontSize: 13, color: COLORS.inkSoft }}>{viajeroRole.sub}</div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 14, fontWeight: 600, color: viajeroRole.accent }}>
+                Continuar <ChevronRight size={16} />
+              </div>
+            </button>
+
+            <button
+              onClick={() => setShowStaffList(true)}
+              style={{
+                display: 'block', margin: '22px auto 0', background: 'none', border: 'none',
+                color: 'rgba(255,255,255,0.85)', fontSize: 12.5, cursor: 'pointer', textDecoration: 'underline',
+                fontFamily: 'inherit',
+              }}
+            >
+              Acceso funcionarios
+            </button>
+          </>
+        )}
+
+        {showStaffList && !pendingStaff && (
+          <div>
+            <p style={{
+              textAlign: 'center', color: '#fff', fontSize: 13, marginBottom: 18,
+              background: 'rgba(8,33,61,0.55)', padding: '8px 16px', borderRadius: 8,
+            }}>
+              Acceso exclusivo para personal institucional
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {staffRoles.map((r) => {
                 const Icon = r.icon;
                 return (
                   <button
                     key={r.id}
-                    onClick={() => onSelectRole(r)}
+                    onClick={() => openStaffKeyForm(r)}
                     style={{
-                      background: '#fff', border: 'none', borderRadius: 14, padding: '20px 18px',
-                      textAlign: 'left', cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: 14,
-                      boxShadow: '0 8px 24px rgba(0,0,0,0.18)', transition: 'transform .15s',
+                      background: '#fff', border: 'none', borderRadius: 12, padding: '14px 16px',
+                      textAlign: 'left', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 12,
+                      boxShadow: '0 4px 14px rgba(0,0,0,0.14)',
                     }}
-                    onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-3px)'}
-                    onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
                   >
                     <div style={{
-                      width: 44, height: 44, borderRadius: 10, background: `${r.accent}15`,
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      width: 36, height: 36, borderRadius: 9, background: `${r.accent}15`,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
                     }}>
-                      <Icon size={22} color={r.accent} />
+                      <Icon size={18} color={r.accent} />
                     </div>
-                    <div>
-                      <div style={{ fontSize: 15, fontWeight: 700, color: COLORS.ink }}>{r.label}</div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: COLORS.ink }}>{r.label}</div>
+                      <div style={{ fontSize: 11.5, color: COLORS.inkSoft }}>{r.sub}</div>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 13, fontWeight: 600, color: r.accent }}>
-                      Ver panel <ChevronRight size={15} />
-                    </div>
+                    <Lock size={14} color={COLORS.inkSoft} />
                   </button>
                 );
               })}
             </div>
-          </>
+            <button
+              onClick={backToPublic}
+              style={{
+                display: 'block', margin: '18px auto 0', background: 'none', border: 'none',
+                color: 'rgba(255,255,255,0.75)', fontSize: 12.5, cursor: 'pointer', fontFamily: 'inherit',
+              }}
+            >
+              ← Volver al acceso de viajero
+            </button>
+          </div>
         )}
 
-        {showAdminLogin && (
-          <div style={{ maxWidth: 380, margin: '0 auto' }}>
+        {pendingStaff && (
+          <div>
             <Card style={{ borderRadius: 16, border: 'none' }} padding="28px">
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
                 <div style={{
-                  width: 38, height: 38, borderRadius: 9, background: COLORS.amberLight,
+                  width: 38, height: 38, borderRadius: 9, background: `${pendingStaff.accent}15`,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}>
-                  <Lock size={18} color={COLORS.amber} />
+                  <Lock size={18} color={pendingStaff.accent} />
                 </div>
                 <div>
                   <div style={{ fontSize: 14, fontWeight: 700, color: COLORS.ink }}>Acceso restringido</div>
-                  <div style={{ fontSize: 12, color: COLORS.inkSoft }}>Administrador del Sistema</div>
+                  <div style={{ fontSize: 12, color: COLORS.inkSoft }}>{pendingStaff.label}</div>
                 </div>
               </div>
-              <form onSubmit={submitAdminKey}>
-                <Field label="Clave de administrador">
+              <form onSubmit={submitStaffKey}>
+                <Field label="Clave de acceso">
                   <input
-                    style={inputStyle} type="password" value={adminKey}
-                    onChange={(e) => setAdminKey(e.target.value)} placeholder="••••••••" autoFocus
+                    style={inputStyle} type="password" value={staffKey}
+                    onChange={(e) => setStaffKey(e.target.value)} placeholder="••••••••" autoFocus
                   />
                 </Field>
-                {adminError && (
+                {staffError && (
                   <div style={{ color: COLORS.red, fontSize: 13, fontWeight: 600, marginBottom: 14, display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <AlertTriangle size={14} /> {adminError}
+                    <AlertTriangle size={14} /> {staffError}
                   </div>
                 )}
                 <Button type="submit" icon={Lock} style={{ width: '100%', justifyContent: 'center' }}>
@@ -502,10 +575,10 @@ function LoginScreen({ onSelectRole }) {
                 </Button>
                 <button
                   type="button"
-                  onClick={() => setShowAdminLogin(false)}
+                  onClick={backToStaffList}
                   style={{ width: '100%', marginTop: 12, background: 'none', border: 'none', color: COLORS.inkSoft, fontSize: 13, cursor: 'pointer', fontFamily: 'inherit' }}
                 >
-                  Volver a selección de perfil
+                  Volver a lista de funcionarios
                 </button>
               </form>
             </Card>
@@ -514,24 +587,11 @@ function LoginScreen({ onSelectRole }) {
               background: 'rgba(8,33,61,0.55)', padding: '6px 14px', borderRadius: 8,
               width: 'fit-content', margin: '14px auto 0',
             }}>
-              Clave de demostración: admin2026
+              Clave de demostración: {pendingStaff.accessKey}
             </p>
           </div>
         )}
       </div>
-
-      <button
-        onClick={openAdminLogin}
-        aria-label="Acceso administrador del sistema"
-        title="Administrador del sistema"
-        style={{
-          position: 'fixed', bottom: 20, left: 76, zIndex: 50, width: 46, height: 46, borderRadius: '50%',
-          background: '#fff', border: `1px solid ${COLORS.border}`, boxShadow: '0 4px 14px rgba(0,0,0,0.18)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
-        }}
-      >
-        <Lock size={18} color={COLORS.amber} />
-      </button>
     </div>
   );
 }
