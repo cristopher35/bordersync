@@ -345,52 +345,11 @@ function Toast({ msg, tone, onClose }) {
   );
 }
 
-function WelcomeScreen({ onContinue }) {
-  return (
-    <div style={{
-      minHeight: '100vh',
-      backgroundImage: `url('/fondo-paso-fronterizo.jpg')`,
-      backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat',
-      display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-      padding: '48px 16px', fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
-      textAlign: 'center',
-    }}>
-      <div style={{
-        background: 'rgba(8,33,61,0.55)', padding: '14px 28px', borderRadius: 14,
-        display: 'flex', alignItems: 'center', gap: 12, marginBottom: 28,
-      }}>
-        <Logo size={48} />
-        <div style={{ textAlign: 'left' }}>
-          <div style={{ color: '#fff', fontWeight: 700, fontSize: 26, letterSpacing: -0.5 }}>BorderSync</div>
-          <div style={{ color: 'rgba(255,255,255,0.92)', fontSize: 13 }}>Sistema de Gestión Aduanera Inteligente</div>
-        </div>
-      </div>
-
-      <div style={{
-        background: 'rgba(8,33,61,0.55)', padding: '24px 32px', borderRadius: 16,
-        maxWidth: 560,
-      }}>
-        <h1 style={{ color: '#fff', fontSize: 22, fontWeight: 700, margin: '0 0 10px' }}>
-          Bienvenido, viajero
-        </h1>
-        <p style={{ color: 'rgba(255,255,255,0.92)', fontSize: 15, lineHeight: 1.6, margin: '0 0 24px' }}>
-          Facilitamos tu cruce fronterizo para que sea más rápido, simple y seguro.
-          Completa tus trámites antes de llegar al paso fronterizo y reduce tu tiempo de espera.
-        </p>
-        <Button onClick={onContinue} style={{ width: '100%', justifyContent: 'center', fontSize: 15, padding: '12px 16px' }} icon={ChevronRight}>
-          Comenzar
-        </Button>
-      </div>
-    </div>
-  );
-}
-
 function LoginScreen({ onSelectRole }) {
-  const [showStaffList, setShowStaffList] = useState(false);
+  const [view, setView] = useState('home'); // home | staffList | staffKey
   const [pendingStaff, setPendingStaff] = useState(null);
   const [staffKey, setStaffKey] = useState('');
   const [staffError, setStaffError] = useState('');
-  const { t } = useContext(AccessibilityContext);
   const viajeroRole = ROLES.find((r) => r.id === 'viajero');
   const staffRoles = ROLES.filter((r) => r.protected);
 
@@ -398,19 +357,21 @@ function LoginScreen({ onSelectRole }) {
     setPendingStaff(role);
     setStaffKey('');
     setStaffError('');
+    setView('staffKey');
   }
 
   function backToStaffList() {
     setPendingStaff(null);
     setStaffKey('');
     setStaffError('');
+    setView('staffList');
   }
 
-  function backToPublic() {
-    setShowStaffList(false);
+  function backToHome() {
     setPendingStaff(null);
     setStaffKey('');
     setStaffError('');
+    setView('home');
   }
 
   function submitStaffKey(e) {
@@ -431,8 +392,8 @@ function LoginScreen({ onSelectRole }) {
       minHeight: '100vh',
       backgroundImage: `url('/fondo-paso-fronterizo.jpg')`,
       backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat',
-      display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '48px 16px',
-      fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
+      display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+      padding: '48px 16px', fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
     }}>
       <div style={{
         display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6,
@@ -445,57 +406,78 @@ function LoginScreen({ onSelectRole }) {
         </div>
       </div>
 
-      <div style={{ marginTop: 36, width: '100%', maxWidth: 460 }}>
+      <div style={{ marginTop: 30, width: '100%', maxWidth: 520 }}>
 
-        {!showStaffList && (
+        {view === 'home' && (
           <>
-            <p style={{
-              textAlign: 'center', color: '#fff', fontSize: 14, marginBottom: 22,
-              background: 'rgba(8,33,61,0.55)', padding: '8px 16px', borderRadius: 8,
-              width: '100%', boxSizing: 'border-box',
+            <div style={{
+              background: 'rgba(8,33,61,0.55)', padding: '18px 22px', borderRadius: 14,
+              marginBottom: 22, textAlign: 'center',
             }}>
-              Continúa como viajero para gestionar tu cruce fronterizo
-            </p>
-            <button
-              onClick={() => onSelectRole(viajeroRole)}
-              style={{
-                background: '#fff', border: 'none', borderRadius: 14, padding: '24px 22px',
-                textAlign: 'left', cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: 16,
-                boxShadow: '0 8px 24px rgba(0,0,0,0.18)', transition: 'transform .15s', width: '100%',
-                boxSizing: 'border-box',
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-3px)'}
-              onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-            >
-              <div style={{
-                width: 50, height: 50, borderRadius: 12, background: `${viajeroRole.accent}15`,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}>
-                <User size={26} color={viajeroRole.accent} />
-              </div>
-              <div>
-                <div style={{ fontSize: 17, fontWeight: 700, color: COLORS.ink, marginBottom: 3 }}>{viajeroRole.label}</div>
-                <div style={{ fontSize: 13, color: COLORS.inkSoft }}>{viajeroRole.sub}</div>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 14, fontWeight: 600, color: viajeroRole.accent }}>
-                Continuar <ChevronRight size={16} />
-              </div>
-            </button>
+              <h1 style={{ color: '#fff', fontSize: 19, fontWeight: 700, margin: '0 0 8px' }}>
+                Bienvenido a BorderSync
+              </h1>
+              <p style={{ color: 'rgba(255,255,255,0.92)', fontSize: 14, lineHeight: 1.5, margin: 0 }}>
+                Facilitamos tu cruce fronterizo para que sea más rápido, simple y seguro.
+                Selecciona cómo quieres ingresar.
+              </p>
+            </div>
 
-            <button
-              onClick={() => setShowStaffList(true)}
-              style={{
-                display: 'block', margin: '22px auto 0', background: 'none', border: 'none',
-                color: 'rgba(255,255,255,0.85)', fontSize: 12.5, cursor: 'pointer', textDecoration: 'underline',
-                fontFamily: 'inherit',
-              }}
-            >
-              Acceso funcionarios
-            </button>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 14 }}>
+              <button
+                onClick={() => onSelectRole(viajeroRole)}
+                style={{
+                  background: '#fff', border: 'none', borderRadius: 14, padding: '22px 20px',
+                  textAlign: 'left', cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: 14,
+                  boxShadow: '0 8px 24px rgba(0,0,0,0.18)', transition: 'transform .15s',
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-3px)'}
+                onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+              >
+                <div style={{
+                  width: 48, height: 48, borderRadius: 12, background: `${viajeroRole.accent}15`,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>
+                  <User size={24} color={viajeroRole.accent} />
+                </div>
+                <div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: COLORS.ink, marginBottom: 3 }}>Soy viajero</div>
+                  <div style={{ fontSize: 12.5, color: COLORS.inkSoft }}>Gestiona tu cruce fronterizo</div>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 13.5, fontWeight: 600, color: viajeroRole.accent }}>
+                  Continuar <ChevronRight size={15} />
+                </div>
+              </button>
+
+              <button
+                onClick={() => setView('staffList')}
+                style={{
+                  background: '#fff', border: 'none', borderRadius: 14, padding: '22px 20px',
+                  textAlign: 'left', cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: 14,
+                  boxShadow: '0 8px 24px rgba(0,0,0,0.18)', transition: 'transform .15s',
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-3px)'}
+                onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+              >
+                <div style={{
+                  width: 48, height: 48, borderRadius: 12, background: `${COLORS.navy}15`,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>
+                  <ShieldCheck size={24} color={COLORS.navy} />
+                </div>
+                <div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: COLORS.ink, marginBottom: 3 }}>Soy funcionario</div>
+                  <div style={{ fontSize: 12.5, color: COLORS.inkSoft }}>Acceso institucional con clave</div>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 13.5, fontWeight: 600, color: COLORS.navy }}>
+                  Continuar <ChevronRight size={15} />
+                </div>
+              </button>
+            </div>
           </>
         )}
 
-        {showStaffList && !pendingStaff && (
+        {view === 'staffList' && (
           <div>
             <p style={{
               textAlign: 'center', color: '#fff', fontSize: 13, marginBottom: 18,
@@ -532,18 +514,18 @@ function LoginScreen({ onSelectRole }) {
               })}
             </div>
             <button
-              onClick={backToPublic}
+              onClick={backToHome}
               style={{
                 display: 'block', margin: '18px auto 0', background: 'none', border: 'none',
                 color: 'rgba(255,255,255,0.75)', fontSize: 12.5, cursor: 'pointer', fontFamily: 'inherit',
               }}
             >
-              ← Volver al acceso de viajero
+              ← Volver
             </button>
           </div>
         )}
 
-        {pendingStaff && (
+        {view === 'staffKey' && pendingStaff && (
           <div>
             <Card style={{ borderRadius: 16, border: 'none' }} padding="28px">
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
@@ -1214,7 +1196,6 @@ const NAV_BY_ROLE = {
 };
 
 export default function App() {
-  const [welcomeDone, setWelcomeDone] = useState(false);
   const [role, setRole] = useState(null);
   const [active, setActive] = useState('inicio');
   const [toast, setToast] = useState(null);
@@ -1237,9 +1218,7 @@ export default function App() {
   return (
     <RegistryProvider>
       <AccessibilityProvider>
-        {!welcomeDone ? (
-          <WelcomeScreen onContinue={() => setWelcomeDone(true)} />
-        ) : !role ? (
+        {!role ? (
           <LoginScreen onSelectRole={handleLogin} />
         ) : (
           <Shell role={role} navItems={NAV_BY_ROLE[role.id]} active={active} setActive={setActive} onLogout={handleLogout}>
