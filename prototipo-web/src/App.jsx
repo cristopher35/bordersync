@@ -135,6 +135,76 @@ function AccessibilityMenu() {
   );
 }
 
+const RegistryContext = createContext(null);
+
+function RegistryProvider({ children }) {
+  const [tramites, setTramites] = useState([]);
+  const [vehiculos, setVehiculos] = useState([]);
+  const [declaracionesSag, setDeclaracionesSag] = useState([]);
+  const [declaracionesMascota, setDeclaracionesMascota] = useState([]);
+
+  let seq = 0;
+  function nextId(prefix) {
+    seq += 1;
+    return `${prefix}-${Date.now().toString().slice(-5)}${seq}`;
+  }
+
+  function agregarTramite(tipo) {
+    const id = nextId('TR');
+    setTramites((t) => [{ id, tipo, estado: 'pendiente', fecha: hoyFormateada() }, ...t]);
+    return id;
+  }
+
+  function agregarVehiculo(data) {
+    const id = nextId('VEH');
+    setVehiculos((v) => [{ id, ...data, estado: 'pendiente', fecha: hoyFormateada() }, ...v]);
+    return id;
+  }
+
+  function agregarDeclaracionSag(data) {
+    const id = nextId('SAG');
+    setDeclaracionesSag((d) => [{ id, ...data, estado: 'pendiente', fecha: hoyFormateada() }, ...d]);
+    return id;
+  }
+
+  function agregarDeclaracionMascota(data) {
+    const id = nextId('MAS');
+    setDeclaracionesMascota((d) => [{ id, ...data, estado: 'pendiente', fecha: hoyFormateada() }, ...d]);
+    return id;
+  }
+
+  function actualizarEstadoTramite(id, estado) {
+    setTramites((t) => t.map((x) => (x.id === id ? { ...x, estado } : x)));
+  }
+
+  function actualizarEstadoVehiculo(id, estado) {
+    setVehiculos((v) => v.map((x) => (x.id === id ? { ...x, estado } : x)));
+  }
+
+  function actualizarEstadoSag(id, estado) {
+    setDeclaracionesSag((d) => d.map((x) => (x.id === id ? { ...x, estado } : x)));
+  }
+
+  function eliminarDeclaracionMascota(id) {
+    setDeclaracionesMascota((d) => d.filter((x) => x.id !== id));
+  }
+
+  return (
+    <RegistryContext.Provider value={{
+      tramites, vehiculos, declaracionesSag, declaracionesMascota,
+      agregarTramite, agregarVehiculo, agregarDeclaracionSag, agregarDeclaracionMascota,
+      actualizarEstadoTramite, actualizarEstadoVehiculo, actualizarEstadoSag, eliminarDeclaracionMascota,
+    }}>
+      {children}
+    </RegistryContext.Provider>
+  );
+}
+
+function hoyFormateada() {
+  const d = new Date();
+  return `${String(d.getDate()).padStart(2, '0')}-${String(d.getMonth() + 1).padStart(2, '0')}-${d.getFullYear()}`;
+}
+
 const ROLES = [
   {
     id: 'viajero',
@@ -468,8 +538,8 @@ function Shell({ role, navItems, active, setActive, onLogout, children }) {
               <Icon size={16} color="#fff" />
             </div>
             <div style={{ overflow: 'hidden' }}>
-              <div style={{ fontSize: 13, fontWeight: 700, whiteSpace: 'nowrap' }}>{role.nombre}</div>
-              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)' }}>{role.label}</div>
+              <div style={{ fontSize: 13, fontWeight: 700, whiteSpace: 'nowrap' }}>{role.label}</div>
+              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)' }}>{role.sub}</div>
             </div>
           </div>
           <button
@@ -528,10 +598,10 @@ function emptyState(Icon, text) {
 }
 
 function ViajeroDashboard({ active, notify }) {
-  const [tramites, setTramites] = useState([
-    { id: 'TR-2026-0341', tipo: 'Ingreso de documentación', estado: 'aprobado', fecha: '18-06-2026' },
-    { id: 'TR-2026-0398', tipo: 'Declaración SAG', estado: 'pendiente', fecha: '20-06-2026' },
-  ]);
+  const {
+    tramites, vehiculos, declaracionesSag,
+    agregarTramite, agregarVehiculo, agregarDeclaracionSag, agregarDeclaracionMascota,
+  } = useContext(RegistryContext);
   const [docForm, setDocForm] = useState({ nombre: '', documento: '', destino: '', fecha: '' });
   const [vehForm, setVehForm] = useState({ patente: '', modelo: '', propietario: '', tipo: 'particular', placaCD: '' });
   const [sagForm, setSagForm] = useState({ productos: '' });
@@ -545,8 +615,7 @@ function ViajeroDashboard({ active, notify }) {
       notify('Faltan campos obligatorios. El sistema bloqueó el envío.', 'error');
       return;
     }
-    const id = `TR-2026-${Math.floor(1000 + Math.random() * 8999)}`;
-    setTramites((t) => [{ id, tipo: 'Ingreso de documentación', estado: 'pendiente', fecha: '21-06-2026' }, ...t]);
+    agregarTramite('Ingreso de documentación');
     notify('Documentación registrada correctamente (RF03)', 'success');
     setDocForm({ nombre: '', documento: '', destino: '', fecha: '' });
   }
@@ -561,10 +630,12 @@ function ViajeroDashboard({ active, notify }) {
       notify('Tipo de placa diplomática no reconocido por el sistema', 'error');
       return;
     }
-    const doc = vehForm.tipo === 'particular'
+    const docTipo = vehForm.tipo === 'particular'
       ? 'Salida y Admisión Temporal de Vehículos Acuerdo Chileno-Argentino (180 días corridos)'
       : 'Título de Salida Temporal de Vehículos (90 días corridos)';
-    notify(`Documento generado: ${doc}`, 'success');
+    agregarVehiculo({ patente: vehForm.patente, modelo: vehForm.modelo, propietario: vehForm.propietario, tipo: vehForm.tipo, documentoGenerado: docTipo });
+    notify(`Documento generado: ${docTipo}`, 'success');
+    setVehForm({ patente: '', modelo: '', propietario: '', tipo: 'particular', placaCD: '' });
   }
 
   function submitSag(e) {
@@ -574,6 +645,7 @@ function ViajeroDashboard({ active, notify }) {
       return;
     }
     const restringido = /carne|fruta|semilla|planta|queso/i.test(sagForm.productos);
+    agregarDeclaracionSag({ detalle: sagForm.productos, riesgo: restringido ? 'alto' : 'bajo' });
     if (restringido) {
       notify('Declaración registrada — advertencia: contiene productos restringidos sujetos a revisión SAG', 'info');
     } else {
@@ -593,6 +665,7 @@ function ViajeroDashboard({ active, notify }) {
       notify('Declarante menor de edad sin representante registrado: envío bloqueado', 'error');
       return;
     }
+    agregarDeclaracionMascota({ tipo: mascotaForm.tipo, cantidad: mascotaForm.cantidad, riesgo: 'bajo' });
     notify('Declaración de mascota registrada y disponible para SAG/Aduanas (RF09)', 'success');
     setMascotaForm({ tipo: '', cantidad: '1', edadDeclarante: '', tutor: '' });
   }
@@ -782,15 +855,20 @@ function ViajeroDashboard({ active, notify }) {
 }
 
 function AduanasDashboard({ active, notify }) {
-  const [docs, setDocs] = useState([
-    { id: 'DOC-3391', viajero: 'Pedro Lagos M.', tipo: 'Documentación de viaje', estado: 'pendiente' },
-    { id: 'DOC-3392', viajero: 'Andrea Solís T.', tipo: 'Registro de vehículo', estado: 'pendiente' },
-    { id: 'DOC-3387', viajero: 'Camila Soto P.', tipo: 'Declaración SAG', estado: 'aprobado' },
-  ]);
+  const { tramites, vehiculos, actualizarEstadoTramite, actualizarEstadoVehiculo } = useContext(RegistryContext);
 
-  function resolver(id, decision) {
-    setDocs((d) => d.map((x) => (x.id === id ? { ...x, estado: decision } : x)));
-    notify(decision === 'aprobado' ? `Documento ${id} validado` : `Documento ${id} rechazado`, decision === 'aprobado' ? 'success' : 'error');
+  const cola = [
+    ...tramites.map((t) => ({ ...t, origen: 'tramite' })),
+    ...vehiculos.map((v) => ({ ...v, tipo: `Registro de vehículo (${v.patente})`, origen: 'vehiculo' })),
+  ].sort((a, b) => (a.fecha < b.fecha ? 1 : -1));
+
+  function resolver(item, decision) {
+    if (item.origen === 'tramite') {
+      actualizarEstadoTramite(item.id, decision);
+    } else {
+      actualizarEstadoVehiculo(item.id, decision);
+    }
+    notify(decision === 'aprobado' ? `${item.id} validado` : `${item.id} rechazado`, decision === 'aprobado' ? 'success' : 'error');
   }
 
   if (active === 'inicio') {
@@ -798,32 +876,34 @@ function AduanasDashboard({ active, notify }) {
       <>
         <PageHeader title="Panel de fiscalización" subtitle="Control y validación de operaciones aduaneras" />
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 14, marginBottom: 24 }}>
-          <StatCard label="Pendientes de validar" value={docs.filter(d => d.estado === 'pendiente').length} icon={Clock} tone="amber" />
-          <StatCard label="Validados hoy" value={docs.filter(d => d.estado === 'aprobado').length} icon={CheckCircle2} tone="green" />
+          <StatCard label="Pendientes de validar" value={cola.filter(d => d.estado === 'pendiente').length} icon={Clock} tone="amber" />
+          <StatCard label="Validados" value={cola.filter(d => d.estado === 'aprobado').length} icon={CheckCircle2} tone="green" />
           <StatCard label="Usuarios concurrentes" value="5.000" icon={Activity} tone="blue" />
         </div>
         <Card>
           <h3 style={{ fontSize: 15, fontWeight: 700, margin: '0 0 14px' }}>Cola de validación</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            {docs.map((d) => (
-              <div key={d.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: `1px solid ${COLORS.border}` }}>
-                <div>
-                  <div style={{ fontSize: 13.5, fontWeight: 600 }}>{d.viajero} — {d.tipo}</div>
-                  <div style={{ fontSize: 12, color: COLORS.inkSoft, fontFamily: 'monospace' }}>{d.id}</div>
-                </div>
-                {d.estado === 'pendiente' ? (
-                  <div style={{ display: 'flex', gap: 8 }}>
-                    <Button variant="secondary" style={{ padding: '6px 12px', fontSize: 13 }} onClick={() => resolver(d.id, 'rechazado')}>Rechazar</Button>
-                    <Button style={{ padding: '6px 12px', fontSize: 13 }} onClick={() => resolver(d.id, 'aprobado')}>Validar</Button>
+          {cola.length === 0 ? emptyState(ClipboardCheck, 'Aún no hay trámites ingresados por viajeros para validar') : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {cola.map((d) => (
+                <div key={d.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: `1px solid ${COLORS.border}` }}>
+                  <div>
+                    <div style={{ fontSize: 13.5, fontWeight: 600 }}>{d.tipo}</div>
+                    <div style={{ fontSize: 12, color: COLORS.inkSoft, fontFamily: 'monospace' }}>{d.id} · {d.fecha}</div>
                   </div>
-                ) : (
-                  <Badge tone={d.estado === 'aprobado' ? 'green' : 'red'}>
-                    {d.estado === 'aprobado' ? 'Validado' : 'Rechazado'}
-                  </Badge>
-                )}
-              </div>
-            ))}
-          </div>
+                  {d.estado === 'pendiente' ? (
+                    <div style={{ display: 'flex', gap: 8 }}>
+                      <Button variant="secondary" style={{ padding: '6px 12px', fontSize: 13 }} onClick={() => resolver(d, 'rechazado')}>Rechazar</Button>
+                      <Button style={{ padding: '6px 12px', fontSize: 13 }} onClick={() => resolver(d, 'aprobado')}>Validar</Button>
+                    </div>
+                  ) : (
+                    <Badge tone={d.estado === 'aprobado' ? 'green' : 'red'}>
+                      {d.estado === 'aprobado' ? 'Validado' : 'Rechazado'}
+                    </Badge>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
         </Card>
       </>
     );
@@ -834,11 +914,11 @@ function AduanasDashboard({ active, notify }) {
       <>
         <PageHeader title="Fiscalizar operaciones aduaneras" subtitle="Búsqueda de operaciones por viajero o trámite" />
         <Card style={{ maxWidth: 600 }}>
-          <Field label="Buscar por nombre, RUN o ID de trámite">
-            <input style={inputStyle} placeholder="Ej: TR-2026-0341" />
+          <Field label="Buscar por ID de trámite o vehículo">
+            <input style={inputStyle} placeholder="Ej: TR-12345 o VEH-12345" />
           </Field>
           <p style={{ fontSize: 13, color: COLORS.inkSoft }}>
-            En este prototipo la búsqueda muestra resultados de ejemplo. En producción consulta la base de datos centralizada vía API REST (RF06).
+            La búsqueda consulta los trámites y vehículos registrados por los viajeros en este prototipo. En producción consultaría la base de datos centralizada vía API REST (RF06).
           </p>
         </Card>
       </>
@@ -861,15 +941,21 @@ function AduanasDashboard({ active, notify }) {
 }
 
 function SagPdiDashboard({ active, notify }) {
-  const [declaraciones, setDeclaraciones] = useState([
-    { id: 'SAG-991', viajero: 'Camila Soto P.', detalle: '2kg de queso artesanal', riesgo: 'medio' },
-    { id: 'SAG-992', viajero: 'Jorge Pino A.', detalle: 'Declaración de mascota: 1 perro', riesgo: 'bajo' },
-    { id: 'SAG-993', viajero: 'Familia Reyes', detalle: 'Semillas de hortaliza (3 paquetes)', riesgo: 'alto' },
-  ]);
+  const { declaracionesSag, declaracionesMascota, actualizarEstadoSag, eliminarDeclaracionMascota } = useContext(RegistryContext);
 
-  function revisar(id) {
-    setDeclaraciones((d) => d.filter((x) => x.id !== id));
-    notify(`Declaración ${id} marcada como revisada`, 'success');
+  const pendientesSag = declaracionesSag.filter((d) => d.estado === 'pendiente');
+  const combinadas = [
+    ...pendientesSag.map((d) => ({ ...d, origen: 'sag', detalle: d.detalle })),
+    ...declaracionesMascota.map((d) => ({ ...d, origen: 'mascota', detalle: `Declaración de mascota: ${d.cantidad} ${d.tipo}` })),
+  ];
+
+  function revisar(item) {
+    if (item.origen === 'sag') {
+      actualizarEstadoSag(item.id, 'aprobado');
+    } else {
+      eliminarDeclaracionMascota(item.id);
+    }
+    notify(`${item.id} marcada como revisada`, 'success');
   }
 
   if (active === 'inicio') {
@@ -877,25 +963,25 @@ function SagPdiDashboard({ active, notify }) {
       <>
         <PageHeader title="Panel de fiscalización sanitaria" subtitle="Revisión de declaraciones SAG/PDI" />
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 14, marginBottom: 24 }}>
-          <StatCard label="Por revisar" value={declaraciones.length} icon={ClipboardCheck} tone="amber" />
-          <StatCard label="Riesgo alto" value={declaraciones.filter(d => d.riesgo === 'alto').length} icon={AlertTriangle} tone="red" />
-          <StatCard label="Riesgo bajo" value={declaraciones.filter(d => d.riesgo === 'bajo').length} icon={CheckCircle2} tone="green" />
+          <StatCard label="Por revisar" value={combinadas.length} icon={ClipboardCheck} tone="amber" />
+          <StatCard label="Riesgo alto" value={combinadas.filter(d => d.riesgo === 'alto').length} icon={AlertTriangle} tone="red" />
+          <StatCard label="Riesgo bajo" value={combinadas.filter(d => d.riesgo === 'bajo' || !d.riesgo).length} icon={CheckCircle2} tone="green" />
         </div>
         <Card>
           <h3 style={{ fontSize: 15, fontWeight: 700, margin: '0 0 14px' }}>Declaraciones pendientes</h3>
-          {declaraciones.length === 0 ? emptyState(ClipboardCheck, 'No quedan declaraciones por revisar') : (
+          {combinadas.length === 0 ? emptyState(ClipboardCheck, 'Aún no hay declaraciones registradas por viajeros') : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {declaraciones.map((d) => (
+              {combinadas.map((d) => (
                 <div key={d.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: `1px solid ${COLORS.border}` }}>
                   <div>
-                    <div style={{ fontSize: 13.5, fontWeight: 600 }}>{d.viajero}</div>
+                    <div style={{ fontSize: 13.5, fontWeight: 600 }}>{d.id}</div>
                     <div style={{ fontSize: 12.5, color: COLORS.inkSoft }}>{d.detalle}</div>
                   </div>
                   <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
                     <Badge tone={d.riesgo === 'alto' ? 'red' : d.riesgo === 'medio' ? 'amber' : 'green'}>
-                      Riesgo {d.riesgo}
+                      Riesgo {d.riesgo || 'bajo'}
                     </Badge>
-                    <Button variant="secondary" style={{ padding: '6px 12px', fontSize: 13 }} onClick={() => revisar(d.id)}>Revisar</Button>
+                    <Button variant="secondary" style={{ padding: '6px 12px', fontSize: 13 }} onClick={() => revisar(d)}>Revisar</Button>
                   </div>
                 </div>
               ))}
@@ -1040,34 +1126,29 @@ export default function App() {
   function handleLogin(r) {
     setRole(r);
     setActive('inicio');
-    notify(`Bienvenido, ${r.nombre.split(' ')[0]}`, 'success');
+    notify(`Sesión iniciada como ${r.label}`, 'success');
   }
 
   function handleLogout() {
     setRole(null);
   }
 
-  if (!role) {
-    return (
+  return (
+    <RegistryProvider>
       <AccessibilityProvider>
-        <LoginScreen onSelectRole={handleLogin} />
+        {!role ? (
+          <LoginScreen onSelectRole={handleLogin} />
+        ) : (
+          <Shell role={role} navItems={NAV_BY_ROLE[role.id]} active={active} setActive={setActive} onLogout={handleLogout}>
+            <Toast msg={toast?.msg} tone={toast?.tone} onClose={() => setToast(null)} />
+            {role.id === 'viajero' && <ViajeroDashboard active={active} notify={notify} />}
+            {role.id === 'aduanas' && <AduanasDashboard active={active} notify={notify} />}
+            {role.id === 'sag_pdi' && <SagPdiDashboard active={active} notify={notify} />}
+            {role.id === 'admin' && <AdminDashboard active={active} notify={notify} />}
+          </Shell>
+        )}
         <AccessibilityMenu />
       </AccessibilityProvider>
-    );
-  }
-
-  const navItems = NAV_BY_ROLE[role.id];
-
-  return (
-    <AccessibilityProvider>
-      <Shell role={role} navItems={navItems} active={active} setActive={setActive} onLogout={handleLogout}>
-        <Toast msg={toast?.msg} tone={toast?.tone} onClose={() => setToast(null)} />
-        {role.id === 'viajero' && <ViajeroDashboard active={active} notify={notify} />}
-        {role.id === 'aduanas' && <AduanasDashboard active={active} notify={notify} />}
-        {role.id === 'sag_pdi' && <SagPdiDashboard active={active} notify={notify} />}
-        {role.id === 'admin' && <AdminDashboard active={active} notify={notify} />}
-      </Shell>
-      <AccessibilityMenu />
-    </AccessibilityProvider>
+    </RegistryProvider>
   );
 }
