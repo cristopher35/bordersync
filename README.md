@@ -70,3 +70,16 @@ ingresar, ya que es un prototipo de evaluación funcional, no un sistema en prod
 - [`CHANGELOG.md`](./CHANGELOG.md) — versiones del prototipo y qué cambió en cada una.
 - [`docs/Historias_de_Usuario_BorderSync.md`](./docs/Historias_de_Usuario_BorderSync.md) —
   historias de usuario que justifican cada funcionalidad implementada.
+- [`docs/Pruebas_Funcionales_v0.1.0.md`](./docs/Pruebas_Funcionales_v0.1.0.md) —
+  evidencia y resultados de la auditoría funcional de la versión inicial.
+- [`docs/Flujo_de_Versiones_y_Pruebas.md`](./docs/Flujo_de_Versiones_y_Pruebas.md) —
+  reglas para ramas, commits, pruebas y registro de versiones futuras.
+- [`docs/Plantilla_Pruebas_Funcionales.md`](./docs/Plantilla_Pruebas_Funcionales.md) —
+  plantilla que debe copiarse y completarse para cada nueva versión.
+
+## Desarrollo de nuevas versiones
+
+Las funcionalidades nuevas y correcciones se desarrollan en ramas separadas; no se
+trabaja directamente sobre `main`. Cada versión debe incluir su informe de pruebas en
+`docs/Pruebas_Funcionales_vX.Y.Z.md`, actualizar el changelog y registrar los cambios
+mediante commits pequeños y descriptivos.

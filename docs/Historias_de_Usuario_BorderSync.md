@@ -233,23 +233,29 @@ integración crítica está caída.
 
 ## Trazabilidad HU → Prototipo v0.1.0
 
+Estado corregido después de la auditoría funcional registrada en
+[`Pruebas_Funcionales_v0.1.0.md`](./Pruebas_Funcionales_v0.1.0.md). Se considera
+"Parcial" cuando el flujo existe visualmente, pero opera con datos simulados o pierde
+sus cambios al recargar.
+
 | HU | RF / Sección ERS | Implementada en v0.1.0 |
 |----|-------------------|--------------------------|
-| HU01 | RF01 | Parcial (simulada en login) |
-| HU02 | RF02, RNF20 | Sí |
-| HU03 | RF03 | Sí |
-| HU04 | RF04 | Sí |
-| HU05 | RF05 | Sí |
-| HU06 | RF09 | Sí |
-| HU07 | RF07 | Sí |
-| HU08 | RF06 | Sí |
-| HU09 | Vista de Escenarios | Parcial (solo interfaz de búsqueda, sin datos reales) |
-| HU10 | RF08 | Parcial (exportación simulada) |
-| HU11 | Vista de Escenarios | Sí |
-| HU12 | Vista de Escenarios | Sí |
-| HU13 | Vista de Escenarios | Sí (solo lectura) |
-| HU14 | 3.1.3 | Sí |
+| HU01 | RF01 | No (no existe registro de usuarios) |
+| HU02 | RF02, RNF20 | No (selección de perfil; administrador con clave fija) |
+| HU03 | RF03 | Parcial (registro temporal en memoria) |
+| HU04 | RF04 | Parcial (validación y mensaje, sin registro ni documento real) |
+| HU05 | RF05 | Parcial (validación local, sin persistencia ni integración SAG) |
+| HU06 | RF09 | Parcial (validación local, sin persistencia ni integración) |
+| HU07 | RF07 | Parcial (consulta datos locales y simulados) |
+| HU08 | RF06 | Parcial (decisión temporal y sin trazabilidad persistente) |
+| HU09 | Vista de Escenarios | No (campo de búsqueda sin consulta ni resultados) |
+| HU10 | RF08 | No (exportación simulada, sin archivo) |
+| HU11 | Vista de Escenarios | Parcial (revisión temporal en memoria) |
+| HU12 | Vista de Escenarios | Parcial (bloqueo temporal; alta y roles simulados) |
+| HU13 | Vista de Escenarios | Parcial (parámetros fijos de solo lectura) |
+| HU14 | 3.1.3 | Parcial (estados fijos, sin monitoreo real) |
 
-Las historias marcadas como "Parcial" son candidatas naturales para las siguientes
-iteraciones del prototipo (v0.2.0 en adelante), una vez que se evalúe el prototipo
-v0.1.0 desde la perspectiva de cada actor.
+Las historias marcadas como "No" o "Parcial" son candidatas para las siguientes
+iteraciones. Una historia solo debe cambiar a "Sí" cuando todos sus criterios de
+aceptación estén respaldados por casos aprobados en el informe de pruebas de la
+versión correspondiente.
