@@ -19,6 +19,89 @@ formal), las versiones se mantienen en el rango `0.x.x`.
 
 ---
 
+## [0.3.0] - 2026-06-24
+
+### Added
+- Estado compartido entre roles: los trámites de documentación, registros de
+  vehículos y declaraciones (SAG y mascotas) que ingresa el Viajero/Turista ahora
+  quedan disponibles en tiempo real en las colas de revisión del Funcionario de
+  Aduanas y del Funcionario SAG/PDI, dentro de la misma sesión del navegador.
+- El Funcionario de Aduanas puede validar o rechazar tanto trámites de
+  documentación como registros de vehículos desde una cola unificada, y ese cambio
+  de estado se refleja de inmediato en el panel del Viajero que lo originó.
+- El Funcionario SAG/PDI revisa declaraciones SAG y de mascotas reales registradas
+  por viajeros, no datos de ejemplo fijos.
+
+### Changed
+- Se eliminaron los nombres de personas ficticias mostrados en el panel lateral
+  (sidebar) y en el mensaje de bienvenida al iniciar sesión; ahora se muestra
+  únicamente el rol activo (ej. "Funcionario de Aduanas") en lugar de un nombre
+  propio, manteniendo el prototipo neutro en cuanto a identidad de usuario.
+
+### Known limitations
+- Los datos compartidos entre roles viven en memoria del navegador y se pierden al
+  recargar la página o cerrar la pestaña, ya que este prototipo no incluye una base
+  de datos real. Esto es intencional: corresponde al alcance de un prototipo de
+  visualización funcional, no a una implementación de backend en producción.
+
+---
+
+## [0.2.0] - 2026-06-24
+
+### Added
+- Panel de ajustes de accesibilidad (ícono fijo en la esquina superior derecha,
+  visible en todas las pantallas): permite ajustar el tamaño de letra de toda la
+  aplicación (A-/A/A+) y cambiar el idioma de la interfaz (Español/English),
+  conforme a RNF22 (usabilidad básica) y RNF24 (idioma).
+- Restricción de acceso al panel de Administrador del Sistema: se retiró su tarjeta
+  de la pantalla principal de selección de rol y se reemplazó por un ícono de
+  candado fijo en la esquina inferior izquierda, que solicita una clave antes de
+  permitir el ingreso. Refuerza el control de acceso basado en roles (RBAC) descrito
+  en el RNF de seguridad (3.3.2) de la ERS.
+
+### Changed
+- Pantalla de inicio de sesión simplificada: el acceso a los roles Viajero/Turista,
+  Funcionario de Aduanas y Funcionario SAG/PDI pasó de un flujo de dos pasos
+  (selección de rol + formulario de usuario/contraseña simulado) a un acceso
+  directo de un clic, dejando la verificación de credenciales únicamente para el
+  rol de Administrador. Cambio motivado por retroalimentación del equipo: el paso
+  de credenciales simuladas no aportaba valor a la demostración y generaba
+  confusión sobre si existían credenciales reales.
+- Las tarjetas de selección de rol ya no muestran nombre de persona ni número de
+  RUT/credencial de ejemplo; solo indican el rol disponible, evitando que el
+  prototipo asocie el sistema a personas ficticias específicas.
+- Se retiró de la pantalla el texto "Prototipo funcional — selecciona un perfil..."
+  y la nota sobre credenciales en producción, dejando esas aclaraciones para la
+  exposición oral en lugar de mostrarlas en la interfaz.
+
+---
+
+## [0.1.2] - 2026-06-24
+
+### Changed
+- Se sustituyó la fotografía de fondo de la pantalla de inicio de sesión (de una
+  vista del Complejo Fronterizo Los Libertadores a una vista de carretera de
+  montaña/cordillera), a solicitud del equipo tras evaluar el contraste visual.
+- Se ajustó el tratamiento de legibilidad del texto sobre la foto de fondo: se
+  reemplazó el uso de sombra de texto (text-shadow) por franjas de fondo azul
+  semitransparente detrás de cada bloque de texto (encabezado, instrucciones,
+  notas), garantizando legibilidad sin depender de qué tan clara u oscura sea la
+  zona de la fotografía detrás del texto.
+
+---
+
+## [0.1.1] - 2026-06-23
+
+### Changed
+- Pantalla de inicio de sesión: se reemplazó el fondo de gradiente azul plano por una
+  fotografía real del Complejo Fronterizo Los Libertadores, manteniendo la legibilidad
+  del texto mediante sombra de texto (text-shadow) en lugar de un overlay de color.
+  Ajuste motivado por retroalimentación directa del equipo al probar el prototipo
+  v0.1.0 como usuario final (HU implícita: la pantalla de acceso debe transmitir
+  contexto institucional y de uso real desde el primer vistazo).
+
+---
+
 ## [0.1.0] - 2026-06-23
 
 ### Added
