@@ -348,9 +348,7 @@ function LoginScreen({ onSelectRole }) {
                       <Icon size={22} color={r.accent} />
                     </div>
                     <div>
-                      <div style={{ fontSize: 15, fontWeight: 700, color: COLORS.ink, marginBottom: 3 }}>{r.label}</div>
-                      <div style={{ fontSize: 12, color: COLORS.inkSoft, fontFamily: 'monospace' }}>{r.nombre}</div>
-                      <div style={{ fontSize: 11, color: COLORS.inkSoft, marginTop: 2 }}>{r.sub}</div>
+                      <div style={{ fontSize: 15, fontWeight: 700, color: COLORS.ink }}>{r.label}</div>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 13, fontWeight: 600, color: r.accent }}>
                       Ver panel <ChevronRight size={15} />
@@ -359,12 +357,6 @@ function LoginScreen({ onSelectRole }) {
                 );
               })}
             </div>
-            <p style={{
-              textAlign: 'center', color: '#fff', fontSize: 11.5, marginTop: 20,
-              background: 'rgba(8,33,61,0.55)', padding: '10px 16px', borderRadius: 8, lineHeight: 1.5,
-            }}>
-              {t.accessNote}
-            </p>
           </>
         )}
 
