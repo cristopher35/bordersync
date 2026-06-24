@@ -1,10 +1,12 @@
-import React, { useState, createContext, useContext } from 'react';
+import React, { useState, createContext, useContext, useEffect } from 'react';
 import {
   LogIn, LogOut, User, Truck, FileText, PawPrint, Search, BarChart3,
   Users, Settings, ShieldCheck, ClipboardCheck, AlertTriangle, CheckCircle2,
   XCircle, Clock, ChevronRight, Plus, Download, Eye, Lock, Globe2, Bell,
   LayoutDashboard, FolderOpen, Activity, Database, Languages, Type, X, Minus
 } from 'lucide-react';
+import AuthScreen from './AuthScreen.jsx';
+import { getCurrentUser, getUsers, updateUserAccess } from './api.js';
 
 const COLORS = {
   navy: '#0B3D6B',
@@ -909,16 +911,41 @@ function SagPdiDashboard({ active, notify }) {
   return null;
 }
 
-function AdminDashboard({ active, notify }) {
-  const [usuarios, setUsuarios] = useState([
-    { id: 1, nombre: 'Camila Soto Pardo', rol: 'Viajero', estado: 'activo' },
-    { id: 2, nombre: 'Marcelo Iturra Vega', rol: 'Aduanas', estado: 'activo' },
-    { id: 3, nombre: 'Daniela Fuentes Rojas', rol: 'SAG/PDI', estado: 'activo' },
-    { id: 4, nombre: 'Pedro Lagos M.', rol: 'Viajero', estado: 'bloqueado' },
-  ]);
+const ROLE_LABELS = { TRAVELER: 'Viajero', CUSTOMS: 'Aduanas', SAG_PDI: 'SAG/PDI', ADMIN: 'Administrador' };
 
-  function toggleEstado(id) {
-    setUsuarios((u) => u.map((x) => x.id === id ? { ...x, estado: x.estado === 'activo' ? 'bloqueado' : 'activo' } : x));
+function AdminDashboard({ active, notify, token }) {
+  const [usuarios, setUsuarios] = useState([]);
+  const [loadingUsers, setLoadingUsers] = useState(false);
+
+  useEffect(() => {
+    if (active !== 'usuarios') return;
+    setLoadingUsers(true);
+    getUsers(token)
+      .then(setUsuarios)
+      .catch((error) => notify(error.message, 'error'))
+      .finally(() => setLoadingUsers(false));
+  }, [active, token]);
+
+  async function toggleEstado(user) {
+    try {
+      const updated = await updateUserAccess(token, user.id, {
+        status: user.status === 'ACTIVE' ? 'BLOCKED' : 'ACTIVE',
+      });
+      setUsuarios((current) => current.map((item) => item.id === updated.id ? updated : item));
+      notify(`Usuario ${updated.status === 'ACTIVE' ? 'reactivado' : 'bloqueado'} correctamente`, 'success');
+    } catch (error) {
+      notify(error.message, 'error');
+    }
+  }
+
+  async function changeRole(user, role) {
+    try {
+      const updated = await updateUserAccess(token, user.id, { role });
+      setUsuarios((current) => current.map((item) => item.id === updated.id ? updated : item));
+      notify('Rol actualizado correctamente', 'success');
+    } catch (error) {
+      notify(error.message, 'error');
+    }
   }
 
   if (active === 'inicio') {
@@ -926,7 +953,7 @@ function AdminDashboard({ active, notify }) {
       <>
         <PageHeader title="Panel de administración" subtitle="Gestión de usuarios, configuración y monitoreo del sistema" />
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 14, marginBottom: 24 }}>
-          <StatCard label="Usuarios totales" value={usuarios.length} icon={Users} tone="blue" />
+          <StatCard label="Usuarios registrados" value="Datos persistentes" icon={Users} tone="blue" />
           <StatCard label="Disponibilidad" value="99.9%" icon={Activity} tone="green" />
           <StatCard label="Integraciones activas" value="4 / 4" icon={Database} tone="blue" />
           <StatCard label="Alertas de seguridad" value="0" icon={ShieldCheck} tone="green" />
@@ -952,9 +979,10 @@ function AdminDashboard({ active, notify }) {
         <PageHeader
           title="Gestión de usuarios y roles"
           subtitle="Control de acceso basado en roles (RBAC)"
-          action={<Button icon={Plus} onClick={() => notify('Formulario de alta de usuario (simulado)', 'info')}>Nuevo usuario</Button>}
+          action={<Button icon={Plus} onClick={() => notify('Los viajeros crean su cuenta desde la pantalla de registro', 'info')}>Nuevo usuario</Button>}
         />
         <Card padding="0">
+          {loadingUsers && <p style={{ padding: 20, color: COLORS.inkSoft }}>Cargando usuarios…</p>}
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             {usuarios.map((u, i) => (
               <div key={u.id} style={{
@@ -962,13 +990,19 @@ function AdminDashboard({ active, notify }) {
                 borderBottom: i < usuarios.length - 1 ? `1px solid ${COLORS.border}` : 'none',
               }}>
                 <div>
-                  <div style={{ fontSize: 14, fontWeight: 600 }}>{u.nombre}</div>
-                  <div style={{ fontSize: 12.5, color: COLORS.inkSoft }}>{u.rol}</div>
+                  <div style={{ fontSize: 14, fontWeight: 600 }}>{u.fullName}</div>
+                  <div style={{ fontSize: 12.5, color: COLORS.inkSoft }}>{ROLE_LABELS[u.role]} · {u.email}</div>
                 </div>
                 <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-                  <Badge tone={u.estado === 'activo' ? 'green' : 'red'}>{u.estado === 'activo' ? 'Activo' : 'Bloqueado'}</Badge>
-                  <Button variant="secondary" style={{ padding: '6px 12px', fontSize: 13 }} onClick={() => toggleEstado(u.id)}>
-                    {u.estado === 'activo' ? 'Bloquear' : 'Reactivar'}
+                  <select value={u.role} onChange={(event) => changeRole(u, event.target.value)} aria-label={`Rol de ${u.fullName}`} style={{ ...inputStyle, width: 'auto', padding: '6px 9px', fontSize: 13 }}>
+                    <option value="TRAVELER">Viajero</option>
+                    <option value="CUSTOMS">Aduanas</option>
+                    <option value="SAG_PDI">SAG/PDI</option>
+                    <option value="ADMIN">Administrador</option>
+                  </select>
+                  <Badge tone={u.status === 'ACTIVE' ? 'green' : 'red'}>{u.status === 'ACTIVE' ? 'Activo' : 'Bloqueado'}</Badge>
+                  <Button variant="secondary" style={{ padding: '6px 12px', fontSize: 13 }} onClick={() => toggleEstado(u)}>
+                    {u.status === 'ACTIVE' ? 'Bloquear' : 'Reactivar'}
                   </Button>
                 </div>
               </div>
@@ -1031,6 +1065,28 @@ export default function App() {
   const [role, setRole] = useState(null);
   const [active, setActive] = useState('inicio');
   const [toast, setToast] = useState(null);
+  const [token, setToken] = useState(() => localStorage.getItem('bordersync_token'));
+  const [restoringSession, setRestoringSession] = useState(Boolean(token));
+
+  function roleFromUser(user) {
+    const ids = { TRAVELER: 'viajero', CUSTOMS: 'aduanas', SAG_PDI: 'sag_pdi', ADMIN: 'admin' };
+    const base = ROLES.find((item) => item.id === ids[user.role]);
+    return { ...base, nombre: user.fullName, sub: user.email, userId: user.id };
+  }
+
+  useEffect(() => {
+    if (!token) {
+      setRestoringSession(false);
+      return;
+    }
+    getCurrentUser(token)
+      .then((user) => setRole(roleFromUser(user)))
+      .catch(() => {
+        localStorage.removeItem('bordersync_token');
+        setToken(null);
+      })
+      .finally(() => setRestoringSession(false));
+  }, [token]);
 
   function notify(msg, tone = 'info') {
     setToast({ msg, tone });
@@ -1043,14 +1099,26 @@ export default function App() {
     notify(`Bienvenido, ${r.nombre.split(' ')[0]}`, 'success');
   }
 
+  function handleAuthenticated(response) {
+    localStorage.setItem('bordersync_token', response.token);
+    setToken(response.token);
+    handleLogin(roleFromUser(response.user));
+  }
+
   function handleLogout() {
+    localStorage.removeItem('bordersync_token');
+    setToken(null);
     setRole(null);
+  }
+
+  if (restoringSession) {
+    return <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', fontFamily: 'Inter, sans-serif' }}>Restaurando sesión…</div>;
   }
 
   if (!role) {
     return (
       <AccessibilityProvider>
-        <LoginScreen onSelectRole={handleLogin} />
+        <AuthScreen onAuthenticated={handleAuthenticated} />
         <AccessibilityMenu />
       </AccessibilityProvider>
     );
@@ -1065,7 +1133,7 @@ export default function App() {
         {role.id === 'viajero' && <ViajeroDashboard active={active} notify={notify} />}
         {role.id === 'aduanas' && <AduanasDashboard active={active} notify={notify} />}
         {role.id === 'sag_pdi' && <SagPdiDashboard active={active} notify={notify} />}
-        {role.id === 'admin' && <AdminDashboard active={active} notify={notify} />}
+        {role.id === 'admin' && <AdminDashboard active={active} notify={notify} token={token} />}
       </Shell>
       <AccessibilityMenu />
     </AccessibilityProvider>

@@ -28,10 +28,15 @@ formal), las versiones se mantienen en el rango `0.x.x`.
   pruebas en cada versión futura.
 - Plantilla reutilizable para los informes de pruebas de nuevas versiones.
 - Trazabilidad de HU01 a HU14 corregida según los resultados reales de la auditoría.
+- Backend Spring Boot 4 con API REST y persistencia H2/PostgreSQL.
+- Registro real de viajeros, login con JWT y contraseñas BCrypt.
+- Bloqueo temporal después de cinco intentos fallidos durante 15 minutos.
+- Gestión persistente de usuarios, estados y roles desde el panel administrador.
+- Invalidación de acceso para cuentas bloqueadas y protección del administrador actual.
+- Seis pruebas automatizadas y prueba funcional integral de la versión `0.2.0`.
 
 ### Planeado
-- Persistencia de usuarios, trámites y cambios de estado para la versión `0.2.0`.
-- Autenticación y control de acceso real para HU01, HU02 y HU12.
+- Persistencia de trámites, vehículos y declaraciones para la versión `0.3.0`.
 - Prototipo funcional **app móvil** (iOS / Android), equivalente en alcance al
   prototipo web, adaptado a patrones de interacción móviles.
 

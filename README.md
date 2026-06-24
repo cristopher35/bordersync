@@ -18,8 +18,12 @@ bordersync/
 ├── README.md                                  Este archivo
 ├── CHANGELOG.md                                Historial de versiones del prototipo
 ├── docs/
-│   └── Historias_de_Usuario_BorderSync.md      HU derivadas de RF01-RF09
-└── prototipo-web/                              Prototipo funcional (versión web)
+│   ├── Historias_de_Usuario_BorderSync.md      HU derivadas de RF01-RF09
+│   └── Pruebas_Funcionales_vX.Y.Z.md           Evidencia por versión
+├── backend/                                    API REST y persistencia
+│   ├── pom.xml                                 Spring Boot 4 / Java 21
+│   └── src/                                    Código y pruebas de integración
+└── prototipo-web/                              Aplicación React
     ├── package.json
     ├── index.html
     └── src/
@@ -27,9 +31,19 @@ bordersync/
         └── main.jsx
 ```
 
-## Cómo correr el prototipo web localmente
+## Cómo correr la aplicación localmente
 
-Requisitos: Node.js 18 o superior.
+Requisitos: Java 21 y Node.js 18 o superior.
+
+Primero se inicia el backend. Por defecto usa una base H2 persistente ubicada en
+`backend/data/`, ignorada por Git:
+
+```bash
+cd backend
+./mvnw spring-boot:run
+```
+
+La API queda disponible en `http://localhost:8080`. En otra terminal:
 
 ```bash
 cd prototipo-web
@@ -37,7 +51,8 @@ npm install
 npm run dev
 ```
 
-Esto abre el prototipo en `http://localhost:5173`.
+El frontend abre en `http://localhost:5173` y usa `http://localhost:8080` como API.
+Para otra URL se configura `VITE_API_URL`.
 
 Para generar una build de producción:
 
@@ -50,13 +65,24 @@ npm run preview
 
 Disponible en: **https://bordersync.vercel.app**
 
-El despliegue se actualiza automáticamente con cada `push` a la rama `main`.
+El frontend se actualiza automáticamente con cada `push` a `main`. La versión 0.2.0
+también requiere desplegar el backend y configurar `VITE_API_URL` en Vercel.
 
-## Roles de prueba
+## Autenticación y roles
 
-El login del prototipo permite ingresar como cualquiera de los 4 actores definidos en
-la ERS. No valida contraseña real — cualquier texto no vacío en ambos campos permite
-ingresar, ya que es un prototipo de evaluación funcional, no un sistema en producción.
+Los viajeros crean una cuenta desde el formulario de registro. El backend valida las
+credenciales y entrega un JWT. Un administrador puede bloquear/reactivar cuentas y
+cambiar sus roles.
+
+Administrador inicial para desarrollo local:
+
+```text
+Correo: admin@bordersync.cl
+Contraseña: Admin2026!
+```
+
+Estas credenciales deben reemplazarse mediante `ADMIN_EMAIL` y `ADMIN_PASSWORD` en
+cualquier entorno compartido o desplegado.
 
 | Rol | Qué se puede probar |
 |---|---|
@@ -72,6 +98,8 @@ ingresar, ya que es un prototipo de evaluación funcional, no un sistema en prod
   historias de usuario que justifican cada funcionalidad implementada.
 - [`docs/Pruebas_Funcionales_v0.1.0.md`](./docs/Pruebas_Funcionales_v0.1.0.md) —
   evidencia y resultados de la auditoría funcional de la versión inicial.
+- [`docs/Pruebas_Funcionales_v0.2.0.md`](./docs/Pruebas_Funcionales_v0.2.0.md) —
+  evidencia de registro, login, persistencia y gestión de usuarios.
 - [`docs/Flujo_de_Versiones_y_Pruebas.md`](./docs/Flujo_de_Versiones_y_Pruebas.md) —
   reglas para ramas, commits, pruebas y registro de versiones futuras.
 - [`docs/Plantilla_Pruebas_Funcionales.md`](./docs/Plantilla_Pruebas_Funcionales.md) —
@@ -83,3 +111,17 @@ Las funcionalidades nuevas y correcciones se desarrollan en ramas separadas; no 
 trabaja directamente sobre `main`. Cada versión debe incluir su informe de pruebas en
 `docs/Pruebas_Funcionales_vX.Y.Z.md`, actualizar el changelog y registrar los cambios
 mediante commits pequeños y descriptivos.
+
+## PostgreSQL
+
+Para usar PostgreSQL se activa el perfil correspondiente y se definen las variables:
+
+```bash
+cd backend
+SPRING_PROFILES_ACTIVE=postgres \
+DB_URL=jdbc:postgresql://localhost:5432/bordersync \
+DB_USERNAME=bordersync \
+DB_PASSWORD=una-clave-segura \
+JWT_SECRET=un-secreto-de-al-menos-32-bytes \
+./mvnw spring-boot:run
+```

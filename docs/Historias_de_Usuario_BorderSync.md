@@ -259,3 +259,17 @@ Las historias marcadas como "No" o "Parcial" son candidatas para las siguientes
 iteraciones. Una historia solo debe cambiar a "Sí" cuando todos sus criterios de
 aceptación estén respaldados por casos aprobados en el informe de pruebas de la
 versión correspondiente.
+
+## Avance HU → Prototipo v0.2.0
+
+Evidencia registrada en
+[`Pruebas_Funcionales_v0.2.0.md`](./Pruebas_Funcionales_v0.2.0.md).
+
+| HU | Estado en v0.2.0 | Evidencia principal |
+|---|---|---|
+| HU01 | Sí | PF-203 y PF-209: registro persistente y rechazo de duplicados. |
+| HU02 | Sí | PF-204, PF-207 y PF-208: sesión, credenciales, bloqueo y JWT. |
+| HU12 | Sí | PF-205 y PF-206: administración persistente de usuarios y roles. |
+
+Las demás historias conservan el estado registrado para `v0.1.0` hasta que sus datos
+sean migrados desde el estado local de React hacia la API.
