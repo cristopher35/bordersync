@@ -1,6 +1,33 @@
 # Changelog
 
-All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
+
+## 0.10.0 (2026-06-25)
+
+
+### Features
+
+* agregar pantalla de bienvenida antes del selector de roles ([8e86c58](https://github.com/cristopher35/bordersync/commit/8e86c5852a52f1df1642dbd2623d636df71a571e))
+* cambio estructura y arquitectura react ([f408959](https://github.com/cristopher35/bordersync/commit/f408959b320e2cef63d1b1b6e4784b0bf451402a))
+* conectar datos entre roles (viajero -> aduanas/SAG) y quitar nombres ficticios del dashboard ([6034133](https://github.com/cristopher35/bordersync/commit/6034133b0fb3b01826a07f5ff888c8356a866117))
+* estructura inicial + prototipo web v0.1.0 ([e922004](https://github.com/cristopher35/bordersync/commit/e922004af4db163503a4e6ecc3e6e99ff03df8af))
+* fondo de login con foto de paso fronterizo Los Libertadores ([7130a93](https://github.com/cristopher35/bordersync/commit/7130a9333807f662c3e549107c988fc972e3ddb1))
+* fusionar bienvenida y login en una sola pantalla con acceso igualitario viajero/funcionario ([6265f22](https://github.com/cristopher35/bordersync/commit/6265f22fe9ed97f345cbc2b9178042a0df7a038b))
+* se agrega linea de tiempo ([6507b52](https://github.com/cristopher35/bordersync/commit/6507b525b287f2334da666089fb34b0818cc87b9))
+* se agrega validación de aprobación de aduana ([d3e309e](https://github.com/cristopher35/bordersync/commit/d3e309ea8795cdbdb79019f09147c3037cdd99e7))
+* simplificar login, restringir admin con clave, agregar accesibilidad (idioma y tamano de letra) ([916918e](https://github.com/cristopher35/bordersync/commit/916918e83561747ef0a89ce6066c3bc57d4307b7))
+
+
+### Bug Fixes
+
+* actualizar imagen de fondo del login ([fd775c4](https://github.com/cristopher35/bordersync/commit/fd775c4983d9a618eda92ca11246aa47463ee70a))
+* agregar fondo semitransparente a textos del login para asegurar legibilidad ([8a2e61d](https://github.com/cristopher35/bordersync/commit/8a2e61d78819d486a066c5ec72b2a6f86f9de22f))
+* configuracion vercel ([60cdaaf](https://github.com/cristopher35/bordersync/commit/60cdaaf19ad94c8301dee450c95ee8e89c41d18c))
+* quitar overlay azul, usar foto pura con sombra de texto para legibilidad ([6e2da3a](https://github.com/cristopher35/bordersync/commit/6e2da3ad31eca50a1014fbced2e8309d2414f7ab))
+* quitar RUT y credenciales especificas del sidebar, dejar solo rol generico ([60d09d8](https://github.com/cristopher35/bordersync/commit/60d09d87964fe094bc85afa84d2d260a57588299))
+* ruta publica ([c978d88](https://github.com/cristopher35/bordersync/commit/c978d88baeb46acc980ac2be2624cc31acfe69d2))
+* simplificar claves de acceso de funcionarios para facilitar pruebas ([51389d8](https://github.com/cristopher35/bordersync/commit/51389d8f54302edcfb962c3959c7a4c6b0b30b85))
+* simplificar tarjetas de rol (quitar nombre/RUT) y quitar nota de credenciales ([123a138](https://github.com/cristopher35/bordersync/commit/123a13849ca6110d02c60a7766dfedcf6b4d87c4))
 
 ## 0.9.0 (2026-06-25)
 
