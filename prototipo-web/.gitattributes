@@ -1,0 +1,11 @@
+# Normaliza los finales de línea a LF dentro del repositorio, para evitar los
+# avisos "LF will be replaced by CRLF" al trabajar entre Windows y macOS.
+* text=auto eol=lf
+
+# Binarios: sin conversión de finales de línea.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
