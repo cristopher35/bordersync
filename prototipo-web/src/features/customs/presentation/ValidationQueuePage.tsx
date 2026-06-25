@@ -5,6 +5,7 @@ import { TextField } from '@/shared/ui/TextField'
 import { TramiteSummary } from '@/shared/ui/TramiteSummary'
 import { IconCheck, IconEye, IconEyeOff } from '@/shared/ui/icons'
 import type { ActorRef } from '@/shared/domain/entities'
+import { puedeValidarAduana } from '@/shared/domain/workflow'
 import { useSession } from '@/shared/session/SessionProvider'
 import { useColaValidacion } from '../application/customsQueries'
 import { validarTramite, rechazarTramite } from '../application/customsService'
@@ -38,7 +39,9 @@ export function ValidationQueuePage() {
         </div>
       ) : (
         <div className="flex flex-col gap-4">
-          {cola.map((t) => (
+          {cola.map((t) => {
+            const validacion = puedeValidarAduana(t)
+            return (
             <div key={t.id} className="flex flex-col gap-3">
               <TramiteSummary
                 tramite={t}
@@ -83,7 +86,12 @@ export function ValidationQueuePage() {
                           </>
                         )}
                       </Button>
-                      <Button variant="success" onClick={() => validarTramite(t.id, actor)}>
+                      <Button
+                        variant="success"
+                        onClick={() => validarTramite(t.id, actor)}
+                        disabled={!validacion.permitido}
+                        title={validacion.razon}
+                      >
                         <IconCheck /> Validar
                       </Button>
                       <Button
@@ -95,13 +103,17 @@ export function ValidationQueuePage() {
                       >
                         Rechazar
                       </Button>
+                      {!validacion.permitido && (
+                        <p className="basis-full text-xs text-amber-600">{validacion.razon}</p>
+                      )}
                     </>
                   )
                 }
               />
               {viewingId === t.id && <TramiteDocument tramite={t} />}
             </div>
-          ))}
+            )
+          })}
         </div>
       )}
     </>

@@ -44,6 +44,34 @@ function estadoAduanas(t: Tramite): EtapaEstado {
   return 'pendiente'
 }
 
+export interface ValidacionAduana {
+  permitido: boolean
+  faltaMigratorio: boolean
+  faltaSanitario: boolean
+  razon?: string
+}
+
+/**
+ * Regla de negocio: Aduanas solo puede APROBAR un trámite cuando el control
+ * migratorio (PDI) y el control sanitario (SAG) están aprobados. Si alguno está
+ * pendiente o rechazado, no se permite la aprobación (sí el rechazo).
+ */
+export function puedeValidarAduana(t: Tramite): ValidacionAduana {
+  const faltaMigratorio = estadoMigratorio(t) !== 'completada'
+  const faltaSanitario = estadoSanitario(t) !== 'completada'
+  const permitido = !faltaMigratorio && !faltaSanitario
+
+  let razon: string | undefined
+  if (!permitido) {
+    const partes: string[] = []
+    if (faltaMigratorio) partes.push('control migratorio (PDI)')
+    if (faltaSanitario) partes.push('control sanitario (SAG)')
+    razon = `Requiere ${partes.join(' y ')} aprobado${partes.length > 1 ? 's' : ''} antes de validar.`
+  }
+
+  return { permitido, faltaMigratorio, faltaSanitario, razon }
+}
+
 export function calcularWorkflow(t: Tramite): Workflow {
   const etapas: Etapa[] = [
     { clave: 'doc', titulo: 'Documentación', estado: 'completada' },

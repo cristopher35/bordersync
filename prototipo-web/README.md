@@ -101,6 +101,9 @@ frontera**.
 - Cola de validación: **previsualiza el documento completo** de cada trámite
   (datos, vehículo, declaraciones e historial) antes de aprobar o rechazar; el
   rechazo exige un motivo y queda con trazabilidad (HU08).
+- **Aduanas solo puede aprobar si el control migratorio (PDI) y el sanitario
+  (SAG) ya están aprobados.** Si falta alguno, el botón "Validar" se deshabilita
+  e indica el motivo (el rechazo sigue disponible).
 - Fiscalización: búsqueda por nombre, RUN o N° de trámite **e historial de
   actividad reciente** (validados/rechazados) con vista de detalle (HU09).
 - Reportes estadísticos con **gráficos** (dona de estados, barras de composición)
