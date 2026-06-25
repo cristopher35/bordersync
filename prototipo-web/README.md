@@ -93,6 +93,9 @@ frontera**.
 - **Pase de cruce con QR real y escaneable** (descargable como **PNG o SVG**)
   que enlaza a esa página de estado, más botones para **copiar el código** del
   trámite o el enlace de consulta.
+- **Workflow del trámite**: un *stepper* con flechas muestra en qué etapa está el
+  proceso (Documentación → Control migratorio → Control sanitario → Validación
+  Aduanas → Autorizado), tanto en tu detalle como en la página pública en línea.
 
 **🛂 Aduanas**
 - Cola de validación: **previsualiza el documento completo** de cada trámite
@@ -104,6 +107,8 @@ frontera**.
   y **exportación real** a Excel (CSV) y a PDF (HU10).
 - **Procesados**: histórico de trámites ya validados o rechazados, con su
   documento completo e historial.
+- El documento de cada trámite muestra el **workflow** (en qué etapa va el
+  proceso), para responder al instante si alguien pregunta por su estado.
 
 **🌿 SAG** (control sanitario)
 - Revisión de declaraciones de productos y mascotas **priorizadas por riesgo**:

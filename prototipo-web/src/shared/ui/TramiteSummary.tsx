@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import type { Tramite } from '@/shared/domain/entities'
 import { StatusBadge, RiskBadge, Badge } from './Badge'
+import { WorkflowBadge } from './WorkflowSteps'
 import { IconCar, IconLeaf, IconPaw } from './icons'
 import { formatDate } from '@/shared/lib/format'
 
@@ -15,7 +16,10 @@ export function TramiteSummary({ tramite, actions }: { tramite: Tramite; actions
           <p className="mt-0.5 font-semibold text-slate-900">{t.viajero.nombre}</p>
           <p className="text-xs text-slate-500">{t.viajero.documento}</p>
         </div>
-        <StatusBadge estado={t.estadoValidacion} />
+        <div className="flex flex-col items-end gap-1">
+          <StatusBadge estado={t.estadoValidacion} />
+          <WorkflowBadge tramite={t} />
+        </div>
       </div>
 
       <dl className="mt-3 grid grid-cols-2 gap-2 text-sm text-slate-600">

@@ -1,6 +1,7 @@
 import { useParams, Link } from 'react-router-dom'
 import { useData } from '@/shared/infrastructure/store'
 import { StatusBadge, Badge, RiskBadge } from '@/shared/ui/Badge'
+import { WorkflowSteps } from '@/shared/ui/WorkflowSteps'
 import { IconCar, IconLeaf, IconPaw } from '@/shared/ui/icons'
 import { formatDate, formatDateTime } from '@/shared/lib/format'
 import { WaitEstimate } from './components/WaitEstimate'
@@ -36,7 +37,9 @@ export function PublicStatusPage() {
             </p>
           </div>
         ) : (
-          <div className="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
+          <div className="flex flex-col gap-4">
+            <WorkflowSteps tramite={tramite} />
+            <div className="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
             <div className="flex items-start justify-between">
               <div>
                 <p className="font-mono text-xs text-slate-400">{tramite.id}</p>
@@ -82,6 +85,7 @@ export function PublicStatusPage() {
 
             <div className="mt-4">
               <WaitEstimate tramite={tramite} />
+            </div>
             </div>
           </div>
         )}

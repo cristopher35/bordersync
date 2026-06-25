@@ -28,6 +28,7 @@ import {
   FaRegCalendar,
   FaRegCopy,
   FaRightFromBracket,
+  FaChevronRight,
 } from 'react-icons/fa6'
 
 /**
@@ -68,3 +69,4 @@ export const IconTrash = styled(FaTrash)
 export const IconCalendar = styled(FaRegCalendar)
 export const IconCopy = styled(FaRegCopy)
 export const IconLogout = styled(FaRightFromBracket)
+export const IconChevron = styled(FaChevronRight)

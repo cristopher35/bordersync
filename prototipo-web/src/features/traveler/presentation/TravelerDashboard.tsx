@@ -3,6 +3,7 @@ import { PageHeader } from '@/shared/ui/AppShell'
 import { Button } from '@/shared/ui/Button'
 import { StatusBadge } from '@/shared/ui/Badge'
 import { IconPlus, IconCalendar, IconCar, IconLeaf, IconPaw } from '@/shared/ui/icons'
+import { WorkflowBadge } from '@/shared/ui/WorkflowSteps'
 import { formatDate } from '@/shared/lib/format'
 import { useMyTramites } from '../application/useMyTramites'
 import { WaitEstimate } from './components/WaitEstimate'
@@ -67,6 +68,9 @@ export function TravelerDashboard() {
                     <IconPaw /> Mascota
                   </span>
                 )}
+              </div>
+              <div>
+                <WorkflowBadge tramite={t} />
               </div>
               <WaitEstimate tramite={t} />
             </Link>

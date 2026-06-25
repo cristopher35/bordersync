@@ -4,6 +4,7 @@ import { Card } from '@/shared/ui/Card'
 import { Button } from '@/shared/ui/Button'
 import { Badge, RiskBadge } from '@/shared/ui/Badge'
 import { IconPlus, IconWarning, IconTrash } from '@/shared/ui/icons'
+import { WorkflowSteps } from '@/shared/ui/WorkflowSteps'
 import { CATEGORIA_LABEL } from '../domain/sagPolicy'
 import { formatDate, formatDateTime } from '@/shared/lib/format'
 import { useSession } from '@/shared/session/SessionProvider'
@@ -42,7 +43,11 @@ export function TramiteDetailPage() {
         ← Mis trámites
       </Link>
 
-      <div className="mt-3 grid gap-6 lg:grid-cols-[1fr_340px]">
+      <div className="mt-3">
+        <WorkflowSteps tramite={tramite} />
+      </div>
+
+      <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_340px]">
         <div className="flex flex-col gap-6">
           {/* Documentación */}
           <Card title="Documentación de viaje" description="RF03">

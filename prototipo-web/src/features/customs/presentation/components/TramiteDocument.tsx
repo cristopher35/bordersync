@@ -1,5 +1,6 @@
 import type { Tramite, CategoriaProducto, EstadoRevision } from '@/shared/domain/entities'
 import { Badge, RiskBadge } from '@/shared/ui/Badge'
+import { WorkflowSteps } from '@/shared/ui/WorkflowSteps'
 import {
   IconDocument,
   IconCar,
@@ -28,6 +29,8 @@ const catTone = (c: CategoriaProducto) =>
 export function TramiteDocument({ tramite: t }: { tramite: Tramite }) {
   return (
     <div className="flex flex-col gap-4 rounded-xl border border-slate-200 bg-slate-50/60 p-4">
+      <WorkflowSteps tramite={t} />
+
       <Section title={<><IconDocument /> Documentación de viaje</>}>
         <Grid>
           <Field label="Viajero" value={t.viajero.nombre} />
