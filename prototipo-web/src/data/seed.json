@@ -1,0 +1,209 @@
+{
+  "users": [
+    {
+      "id": "u-viajero-1",
+      "nombre": "Ana Torres",
+      "documento": "18.345.678-9",
+      "email": "viajero@bordersync.cl",
+      "password": "123456",
+      "rol": "viajero",
+      "estado": "activo",
+      "failedAttempts": 0,
+      "lockedUntil": null
+    },
+    {
+      "id": "u-viajero-2",
+      "nombre": "Diego Fuentes",
+      "documento": "20.111.222-3",
+      "email": "diego@bordersync.cl",
+      "password": "123456",
+      "rol": "viajero",
+      "estado": "activo",
+      "failedAttempts": 0,
+      "lockedUntil": null
+    },
+    {
+      "id": "u-aduanas-1",
+      "nombre": "Carlos Pérez",
+      "documento": "15.987.654-3",
+      "email": "aduanas@bordersync.cl",
+      "password": "123456",
+      "rol": "aduanas",
+      "estado": "activo",
+      "failedAttempts": 0,
+      "lockedUntil": null
+    },
+    {
+      "id": "u-sag-1",
+      "nombre": "María Soto",
+      "documento": "16.222.333-4",
+      "email": "sag@bordersync.cl",
+      "password": "123456",
+      "rol": "sag",
+      "estado": "activo",
+      "failedAttempts": 0,
+      "lockedUntil": null
+    },
+    {
+      "id": "u-pdi-1",
+      "nombre": "Jorge Núñez",
+      "documento": "14.777.888-9",
+      "email": "pdi@bordersync.cl",
+      "password": "123456",
+      "rol": "pdi",
+      "estado": "activo",
+      "failedAttempts": 0,
+      "lockedUntil": null
+    },
+    {
+      "id": "u-admin-1",
+      "nombre": "Administrador SGAI",
+      "documento": "10.555.666-7",
+      "email": "admin@bordersync.cl",
+      "password": "123456",
+      "rol": "admin",
+      "estado": "activo",
+      "failedAttempts": 0,
+      "lockedUntil": null
+    },
+    {
+      "id": "u-viajero-3",
+      "nombre": "Lucía Ramírez",
+      "documento": "19.444.555-6",
+      "email": "lucia@bordersync.cl",
+      "password": "123456",
+      "rol": "viajero",
+      "estado": "bloqueado",
+      "failedAttempts": 5,
+      "lockedUntil": null
+    }
+  ],
+  "tramites": [
+    {
+      "id": "TRM-2026-0001",
+      "travelerUserId": "u-viajero-1",
+      "viajero": { "nombre": "Ana Torres", "documento": "18.345.678-9", "nacionalidad": "Chilena" },
+      "documentacion": { "destino": "Mendoza, Argentina", "fechaViaje": "2026-07-05", "motivo": "Turismo" },
+      "vehiculo": {
+        "tipo": "particular",
+        "patente": "JKLM-12",
+        "modelo": "Toyota RAV4 2022",
+        "propietario": "Ana Torres",
+        "tipoPlaca": null,
+        "documentoGenerado": "Salida y Admisión Temporal de Vehículos Acuerdo Chileno-Argentino",
+        "vigenciaDias": 180,
+        "vencimiento": "2026-12-22"
+      },
+      "declaracionSag": {
+        "productos": [
+          { "nombre": "Manzanas", "categoria": "restringido", "cantidad": 6 },
+          { "nombre": "Agua embotellada", "categoria": "permitido", "cantidad": 2 }
+        ],
+        "advertencia": true,
+        "nivelRiesgo": "medio",
+        "estadoRevision": "pendiente"
+      },
+      "declaracionMascota": null,
+      "estadoValidacion": "pendiente",
+      "controlMigratorio": { "estado": "pendiente", "revisadoPor": null, "motivo": null },
+      "createdAt": "2026-06-24T09:15:00.000Z",
+      "updatedAt": "2026-06-24T09:15:00.000Z",
+      "historial": [
+        { "fecha": "2026-06-24T09:15:00.000Z", "actor": "Ana Torres", "accion": "Creó el trámite y precargó documentación" }
+      ]
+    },
+    {
+      "id": "TRM-2026-0002",
+      "travelerUserId": "u-viajero-2",
+      "viajero": { "nombre": "Diego Fuentes", "documento": "20.111.222-3", "nacionalidad": "Chilena" },
+      "documentacion": { "destino": "Los Andes, Chile (ingreso)", "fechaViaje": "2026-06-28", "motivo": "Regreso de vacaciones" },
+      "vehiculo": null,
+      "declaracionSag": {
+        "productos": [
+          { "nombre": "Embutidos artesanales", "categoria": "prohibido", "cantidad": 1 }
+        ],
+        "advertencia": true,
+        "nivelRiesgo": "alto",
+        "estadoRevision": "pendiente"
+      },
+      "declaracionMascota": {
+        "tipoAnimal": "Perro",
+        "cantidad": 1,
+        "declaranteEsMenor": true,
+        "representanteLegal": "Patricia Fuentes (madre)",
+        "nivelRiesgo": "medio",
+        "estadoRevision": "pendiente"
+      },
+      "estadoValidacion": "pendiente",
+      "controlMigratorio": { "estado": "pendiente", "revisadoPor": null, "motivo": null },
+      "createdAt": "2026-06-23T18:40:00.000Z",
+      "updatedAt": "2026-06-23T18:40:00.000Z",
+      "historial": [
+        { "fecha": "2026-06-23T18:40:00.000Z", "actor": "Diego Fuentes", "accion": "Creó el trámite con declaración SAG y mascota" }
+      ]
+    },
+    {
+      "id": "TRM-2026-0003",
+      "travelerUserId": "u-viajero-2",
+      "viajero": { "nombre": "Diego Fuentes", "documento": "20.111.222-3", "nacionalidad": "Chilena" },
+      "documentacion": { "destino": "Mendoza, Argentina", "fechaViaje": "2026-05-10", "motivo": "Misión diplomática" },
+      "vehiculo": {
+        "tipo": "diplomatico",
+        "patente": "CD-0451",
+        "modelo": "Mercedes-Benz Clase E",
+        "propietario": "Consulado de Chile",
+        "tipoPlaca": "CD",
+        "documentoGenerado": "Título de Salida Temporal de Vehículos",
+        "vigenciaDias": 90,
+        "vencimiento": "2026-08-08"
+      },
+      "declaracionSag": null,
+      "declaracionMascota": null,
+      "estadoValidacion": "aprobado",
+      "controlMigratorio": { "estado": "aprobado", "revisadoPor": "Jorge Núñez", "motivo": null },
+      "createdAt": "2026-05-09T11:00:00.000Z",
+      "updatedAt": "2026-05-09T15:20:00.000Z",
+      "historial": [
+        { "fecha": "2026-05-09T11:00:00.000Z", "actor": "Diego Fuentes", "accion": "Creó el trámite con vehículo diplomático" },
+        { "fecha": "2026-05-09T15:20:00.000Z", "actor": "Carlos Pérez", "accion": "Validó documentos", "resultado": "aprobado" }
+      ]
+    },
+    {
+      "id": "TRM-2026-0004",
+      "travelerUserId": "u-viajero-1",
+      "viajero": { "nombre": "Ana Torres", "documento": "18.345.678-9", "nacionalidad": "Chilena" },
+      "documentacion": { "destino": "Bariloche, Argentina", "fechaViaje": "2026-08-01", "motivo": "Turismo" },
+      "vehiculo": null,
+      "declaracionSag": null,
+      "declaracionMascota": null,
+      "estadoValidacion": "pendiente",
+      "controlMigratorio": { "estado": "pendiente", "revisadoPor": null, "motivo": null },
+      "createdAt": "2026-06-24T10:05:00.000Z",
+      "updatedAt": "2026-06-24T10:05:00.000Z",
+      "historial": [
+        { "fecha": "2026-06-24T10:05:00.000Z", "actor": "Ana Torres", "accion": "Creó el trámite y precargó documentación" }
+      ]
+    }
+  ],
+  "actividad": [
+    { "id": "act-1", "fecha": "2026-06-24T10:05:00.000Z", "actorId": "u-viajero-1", "actorNombre": "Ana Torres", "actorRol": "viajero", "accion": "Creó el trámite TRM-2026-0004", "tramiteId": "TRM-2026-0004" },
+    { "id": "act-2", "fecha": "2026-06-24T09:15:00.000Z", "actorId": "u-viajero-1", "actorNombre": "Ana Torres", "actorRol": "viajero", "accion": "Creó el trámite TRM-2026-0001", "tramiteId": "TRM-2026-0001" },
+    { "id": "act-3", "fecha": "2026-06-23T18:40:00.000Z", "actorId": "u-viajero-2", "actorNombre": "Diego Fuentes", "actorRol": "viajero", "accion": "Creó el trámite TRM-2026-0002", "tramiteId": "TRM-2026-0002" },
+    { "id": "act-4", "fecha": "2026-05-09T15:20:00.000Z", "actorId": "u-aduanas-1", "actorNombre": "Carlos Pérez", "actorRol": "aduanas", "accion": "Validó documentos del trámite TRM-2026-0003", "tramiteId": "TRM-2026-0003", "resultado": "aprobado" },
+    { "id": "act-5", "fecha": "2026-05-09T11:00:00.000Z", "actorId": "u-viajero-2", "actorNombre": "Diego Fuentes", "actorRol": "viajero", "accion": "Creó el trámite TRM-2026-0003", "tramiteId": "TRM-2026-0003" }
+  ],
+  "integraciones": [
+    { "nombre": "SAG", "estado": "operativa", "latenciaMs": 120 },
+    { "nombre": "PDI", "estado": "operativa", "latenciaMs": 95 },
+    { "nombre": "Aduanas", "estado": "operativa", "latenciaMs": 80 },
+    { "nombre": "Aduanas Argentina", "estado": "degradada", "latenciaMs": 640 }
+  ],
+  "parametros": [
+    { "clave": "MFA funcionarios", "descripcion": "Autenticación multifactor para usuarios internos", "activo": true },
+    { "clave": "Cifrado AES-256", "descripcion": "Cifrado de datos sensibles en reposo", "activo": true },
+    { "clave": "HTTPS / TLS 1.3", "descripcion": "Cifrado de la comunicación cliente-servidor", "activo": true },
+    { "clave": "Bloqueo por 5 intentos", "descripcion": "Bloqueo temporal de cuenta por 15 minutos", "activo": true },
+    { "clave": "Cierre de sesión por inactividad", "descripcion": "Cierre automático tras 15 minutos sin actividad", "activo": true },
+    { "clave": "Respaldo diario", "descripcion": "Copia de seguridad automática y cifrada de datos críticos", "activo": true }
+  ]
+}

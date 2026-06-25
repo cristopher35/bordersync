@@ -1,0 +1,35 @@
+@import 'tailwindcss';
+
+/*
+ * Identidad visual institucional (RNF25). Paleta basada en el azul corporativo
+ * del Servicio Nacional de Aduanas de Chile, con grises neutros y colores de
+ * estado para semáforos de riesgo y validación.
+ */
+@theme {
+  --color-gov-50: #eef3fb;
+  --color-gov-100: #d7e3f5;
+  --color-gov-200: #b0c6ea;
+  --color-gov-300: #7fa1da;
+  --color-gov-400: #4d79c7;
+  --color-gov-500: #2a59b0;
+  --color-gov-600: #1c4493;
+  --color-gov-700: #163675;
+  --color-gov-800: #122c5e;
+  --color-gov-900: #0f244c;
+
+  --color-accent-500: #0ea5b7;
+  --color-accent-600: #0c8a99;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background-color: #f1f5f9;
+}
