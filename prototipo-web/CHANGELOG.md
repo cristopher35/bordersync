@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.13.0](https://github.com/cristopher35/bordersync/compare/v0.12.0...v0.13.0) (2026-06-25)
+
+
+### Bug Fixes
+
+* validacion para extranjeros, sin validacion de patentes, usuarios tienen nacionalidad, tema aduana y actualizacion de readme ([63eaee4](https://github.com/cristopher35/bordersync/commit/63eaee4c04bcefcc27181fef1c4255094e677205))
+
 ## [0.12.0](https://github.com/cristopher35/bordersync/compare/v0.11.0...v0.12.0) (2026-06-25)
 
 
