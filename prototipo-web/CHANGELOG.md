@@ -7,34 +7,34 @@ All notable changes to this project will be documented in this file. See [commit
 
 ### Bug Fixes
 
-* changelog ([20c9f90](https://github.com/cristopher35/bordersync/commit/20c9f9090fff0eea2fc11ffc55ddc11e89a69359))
+* changelog: se mejoro la forma en la que se estaba guardando el log de cambio segun comando de package json ([20c9f90](https://github.com/cristopher35/bordersync/commit/20c9f9090fff0eea2fc11ffc55ddc11e89a69359))
 
 ## 0.11.0 (2026-06-25)
 
 
 ### Features
 
-* clear ([71181d6](https://github.com/cristopher35/bordersync/commit/71181d6cdb10bfb0d74170ad7a9783b17067793f))
+* clear: se eliminaron archivos que estaban repetidos ([71181d6](https://github.com/cristopher35/bordersync/commit/71181d6cdb10bfb0d74170ad7a9783b17067793f))
 
 
 ### Bug Fixes
 
-* readme ([f57b9fd](https://github.com/cristopher35/bordersync/commit/f57b9fdc8df1c8f642af6740af2d15c050b78e4d))
-* release ([94e7e0b](https://github.com/cristopher35/bordersync/commit/94e7e0beb715b4f51f8eb5d823dbc8a3ce4f9578))
+* readme: se mejoro el readme base ([f57b9fd](https://github.com/cristopher35/bordersync/commit/f57b9fdc8df1c8f642af6740af2d15c050b78e4d))
+* release: prueba de cambio de version ([94e7e0b](https://github.com/cristopher35/bordersync/commit/94e7e0beb715b4f51f8eb5d823dbc8a3ce4f9578))
 
 ## 0.8.0 (2026-06-25)
 
 
 ### Bug Fixes
 
-* configuracion vercel ([60cdaaf](https://github.com/cristopher35/bordersync/commit/60cdaaf19ad94c8301dee450c95ee8e89c41d18c))
+* configuracion vercel: se agrega archivo de configuracion vercel para rutas publicas con parametros ([60cdaaf](https://github.com/cristopher35/bordersync/commit/60cdaaf19ad94c8301dee450c95ee8e89c41d18c))
 
 ## 0.7.0 (2026-06-25)
 
 
 ### Bug Fixes
 
-* ruta publica ([c978d88](https://github.com/cristopher35/bordersync/commit/c978d88baeb46acc980ac2be2624cc31acfe69d2))
+* ruta publica: prueba de mejora de ruta publica en configuracion ([c978d88](https://github.com/cristopher35/bordersync/commit/c978d88baeb46acc980ac2be2624cc31acfe69d2))
 
 ## 0.6.0 (2026-06-25)
 
