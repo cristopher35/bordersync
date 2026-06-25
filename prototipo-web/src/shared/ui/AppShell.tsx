@@ -21,10 +21,12 @@ export function AppShell({ navItems }: { navItems: NavItem[] }) {
 
   return (
     <div className="min-h-full">
+      {/* Franja roja institucional (bandera de Chile). */}
+      <div className="h-1 bg-accent-500" />
       <header className="bg-gov-800 text-white">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/15 font-bold">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent-500 font-bold">
               B
             </div>
             <div className="leading-tight">

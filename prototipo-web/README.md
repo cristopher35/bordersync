@@ -39,8 +39,16 @@ Copia `.env.example` a `.env` y define el dominio donde se aloja la app:
 VITE_APP_BASE_URL=https://tu-dominio.cl
 ```
 
-Esta URL se usa para construir los **enlaces de los QR** de consulta de trámite.
-Si no se define, se usa el origen actual del navegador como respaldo.
+Esta URL se usa para construir los **enlaces de los QR** de consulta de trámite:
+
+- En **desarrollo** (`npm run dev`) los QR apuntan al **origen actual** del
+  navegador (localhost o tu IP de red), para que funcionen al probar en local.
+- En **producción** se usa `VITE_APP_BASE_URL`; si no está definida, cae al
+  origen actual.
+
+> Para escanear el QR desde el **teléfono** en desarrollo, levanta el servidor con
+> `npm run dev -- --host` y abre la app en el móvil con la IP que muestra Vite
+> (ej. `http://192.168.1.50:5173`): el QR usará esa misma IP.
 
 ### Cuentas de demostración
 
@@ -59,15 +67,18 @@ acceso rápido** que rellenan las credenciales por ti.
 
 ## 🔄 El flujo de punta a punta
 
-Para ver de qué se trata el sistema, sigue este recorrido con dos pestañas:
+Para ver de qué se trata el sistema, sigue este recorrido (la contraseña de todas
+las cuentas es `123456`):
 
-1. **Como viajero** (`viajero@bordersync.cl`): crea un *Nuevo trámite*, añádele un
-   vehículo y una declaración SAG. Verás que cada trámite genera un **pase de
-   cruce con QR** y una **estimación de tiempo de espera**.
-2. **Como funcionario de Aduanas** (`aduanas@bordersync.cl`): ese trámite aparece
-   en la **cola de validación**. Apruébalo.
-3. **Vuelve a la vista del viajero**: el trámite ahora está *Aprobado*, y la
-   estimación cambió a **carril preferente (~2 min)**.
+1. **Viajero** (`viajero@bordersync.cl`): crea un *Nuevo trámite*, añádele un
+   vehículo y una declaración SAG. Verás el **pase con QR**, la **estimación de
+   espera** y el **workflow** del trámite.
+2. **PDI** (`pdi@bordersync.cl`): aprueba el **control migratorio** del viajero.
+3. **SAG** (`sag@bordersync.cl`): aprueba la **declaración** de productos.
+4. **Aduanas** (`aduanas@bordersync.cl`): recién ahora se habilita **Validar**
+   (la regla exige PDI y SAG aprobados). Apruébalo.
+5. **Vuelve al viajero**: el trámite queda *Autorizado*, el workflow muestra todas
+   las etapas en verde y la estimación cambia a **carril preferente (~2 min)**.
 
 Ese es el valor del sistema: **trabajo hecho antes de llegar = menos tiempo en la
 frontera**.
@@ -77,7 +88,9 @@ frontera**.
 ## 👥 Funcionalidades por rol (trazabilidad con las HU)
 
 **🧳 Viajero**
-- Registro de cuenta con validación de datos (HU01).
+- Registro de cuenta con **nacionalidad** y validación de datos. Como la Aduana
+  se usa al **entrar a Chile**, el **RUT solo se valida para chilenos**; los
+  extranjeros se identifican con pasaporte/documento (HU01).
 - Documentación de viaje: destino, fecha y motivo (HU03).
 - Vehículo (HU04): *particular* (documento con 180 días de vigencia) o
   *diplomático* con placa **CD / CC / OI / PAT** (90 días). Una placa diplomática
@@ -140,15 +153,16 @@ Las reglas de validación viven en el **dominio** (no en la UI), de modo que son
 
 | Validación | Dónde aplica |
 |------------|--------------|
-| **RUT chileno** con dígito verificador (módulo 11) y autoformato | Registro |
+| **Nacionalidad** obligatoria | Registro |
+| **RUT chileno** con dígito verificador (módulo 11) y autoformato — **solo si la nacionalidad es chilena**; los extranjeros usan pasaporte/documento genérico | Registro |
 | **Correo** con formato válido y **único** (no repetido) | Registro |
 | **Contraseña** ≥ 6 caracteres, con al menos una letra y un número | Registro |
-| **Patente** con formato chileno (ej. `BBBB-12`, `AB-1234`) | Vehículo |
-| **Placa diplomática** restringida a CD / CC / OI / PAT | Vehículo |
+| **Patente internacional** (alfanumérica; acepta placas de cualquier país) | Vehículo |
+| **Placa diplomática** restringida a CD / CC / OI / PAT (regla del ERS) | Vehículo |
 | **Fecha de viaje** no anterior a hoy | Nuevo trámite |
 | **Menor de edad** ⇒ representante legal obligatorio | Mascota |
 | **Cantidades** dentro de rango y **sin productos duplicados** | SAG / Mascota |
-| **Motivo obligatorio** al rechazar un trámite | Aduanas |
+| **Motivo obligatorio** al rechazar (Aduanas, SAG y PDI) | Funcionarios |
 
 Los formularios muestran los errores **campo por campo** y en tiempo real.
 
@@ -164,8 +178,10 @@ Los formularios muestran los errores **campo por campo** y en tiempo real.
 
 - **React 18** + **TypeScript** (modo estricto)
 - **Vite 6** como bundler y servidor de desarrollo
-- **Tailwind CSS 4** para los estilos
+- **Tailwind CSS 4** para los estilos (paleta institucional de Aduanas: azul
+  marino + rojo, conforme a RNF25)
 - **React Router 6** para la navegación
+- **react-icons** (Font Awesome) para la iconografía, **qrcode.react** para los QR
 - Sin librerías de estado ni de backend: un store propio sobre `localStorage`
 
 ---
@@ -229,6 +245,25 @@ El acceso a los datos pasa siempre por el *store* y los *repositorios* de
 backend real** (API REST/JSON, como define el ERS) basta con reimplementar esos
 repositorios con llamadas HTTP: ni el dominio ni las pantallas cambian.
 
+> Al ser localStorage por navegador, los datos **no se comparten entre
+> dispositivos**: los trámites de la semilla existen en todos lados, pero uno
+> creado en un equipo no se verá en otro hasta que haya un backend compartido.
+
+---
+
+## 🌐 Despliegue (Vercel)
+
+Es una SPA, así que el host debe reenviar todas las rutas a `index.html` para que
+el router del cliente maneje enlaces directos como `/estado/:id` (si no, el host
+devuelve su propio 404). Eso ya está configurado en [`vercel.json`](vercel.json):
+
+```json
+{ "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }] }
+```
+
+En Vercel, define `VITE_APP_BASE_URL` con tu dominio en las variables de entorno
+del proyecto para que los QR apunten ahí.
+
 ---
 
 ## 📌 Notas
@@ -238,5 +273,7 @@ repositorios con llamadas HTTP: ni el dominio ni las pantallas cambian.
   espera y carril preferente, pase con QR), **sin depender de servicios de IA
   externos**.
 - El QR del pase es **real y escaneable** (generado con `qrcode.react`): apunta a
-  `VITE_APP_BASE_URL/estado/<id>`. Para que funcione al escanearlo desde un
-  teléfono, ese dominio debe estar publicado y accesible.
+  `<origen o VITE_APP_BASE_URL>/estado/<id>`. En local usa el origen del navegador;
+  en producción, el dominio configurado.
+- La iconografía usa **react-icons (Font Awesome)** y la paleta sigue los colores
+  institucionales de Aduanas (azul marino + rojo).

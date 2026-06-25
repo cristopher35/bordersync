@@ -19,7 +19,7 @@ export function PublicStatusPage() {
     <main className="min-h-full bg-slate-50">
       <header className="bg-gov-800 text-white">
         <div className="mx-auto flex max-w-2xl items-center gap-3 px-6 py-4">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/15 font-bold">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent-500 font-bold">
             B
           </div>
           <div className="leading-tight">

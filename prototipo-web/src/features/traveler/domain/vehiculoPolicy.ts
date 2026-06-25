@@ -36,7 +36,7 @@ export function buildVehiculo(input: VehiculoInput, now: Date): Result<Vehiculo>
     return err('Patente, modelo y propietario son obligatorios.')
   }
   if (!isValidPatente(input.patente)) {
-    return err('Patente con formato inválido (ej. BBBB-12 o AB-1234).')
+    return err('Patente inválida (letras y números, ej. BBBB-12, AB-1234 o AB 123 CD).')
   }
 
   if (input.tipo === 'diplomatico') {

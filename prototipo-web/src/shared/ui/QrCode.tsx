@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import { QRCodeCanvas, QRCodeSVG } from 'qrcode.react'
 import { IconDownload } from './icons'
 
-const FG = '#0f244c'
+const FG = '#131d30'
 const BG = '#ffffff'
 
 /**

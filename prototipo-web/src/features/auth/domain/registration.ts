@@ -1,7 +1,23 @@
-import { isEmail, isValidRut, isBlank } from '@/shared/lib/validation'
+import { isEmail, isValidRut, isValidDocumento, isBlank } from '@/shared/lib/validation'
+
+/** Nacionalidades disponibles en el registro. "Chilena" activa la validación de RUT. */
+export const NACIONALIDADES = [
+  'Chilena',
+  'Argentina',
+  'Peruana',
+  'Boliviana',
+  'Brasileña',
+  'Paraguaya',
+  'Uruguaya',
+  'Colombiana',
+  'Venezolana',
+  'Ecuatoriana',
+  'Otra',
+] as const
 
 export interface RegisterInput {
   nombre: string
+  nacionalidad: string
   documento: string
   email: string
   password: string
@@ -20,10 +36,19 @@ export function validateRegistration(input: RegisterInput, existingEmails: strin
     errors.nombre = 'Ingresa tu nombre completo.'
   }
 
+  if (isBlank(input.nacionalidad)) {
+    errors.nacionalidad = 'Selecciona tu nacionalidad.'
+  }
+
+  // El RUT es una norma chilena: solo se valida cuando la nacionalidad es chilena.
+  // Para extranjeros se acepta el pasaporte / documento de identidad genérico.
+  const esChileno = input.nacionalidad === 'Chilena'
   if (isBlank(input.documento)) {
     errors.documento = 'El documento es obligatorio.'
-  } else if (!isValidRut(input.documento)) {
+  } else if (esChileno && !isValidRut(input.documento)) {
     errors.documento = 'RUT inválido (revisa el dígito verificador).'
+  } else if (!esChileno && !isValidDocumento(input.documento)) {
+    errors.documento = 'Documento inválido (pasaporte o identificación).'
   }
 
   if (isBlank(input.email)) {

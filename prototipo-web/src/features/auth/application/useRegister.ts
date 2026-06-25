@@ -8,7 +8,14 @@ import { useSession } from '@/shared/session/SessionProvider'
 import { ROLE_HOME } from '@/shared/session/roleHome'
 import { validateRegistration, type RegisterInput, type RegisterErrors } from '../domain/registration'
 
-const empty: RegisterInput = { nombre: '', documento: '', email: '', password: '', confirm: '' }
+const empty: RegisterInput = {
+  nombre: '',
+  nacionalidad: '',
+  documento: '',
+  email: '',
+  password: '',
+  confirm: '',
+}
 
 /** Caso de uso de registro de viajero (RF01). */
 export function useRegister() {
@@ -34,6 +41,7 @@ export function useRegister() {
     const user: User = {
       id: `u-${Date.now()}`,
       nombre: input.nombre.trim(),
+      nacionalidad: input.nacionalidad,
       documento: input.documento.trim(),
       email: input.email.trim().toLowerCase(),
       password: input.password,

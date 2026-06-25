@@ -22,7 +22,7 @@ export function LoginPage() {
       <aside className="relative hidden flex-col justify-between overflow-hidden bg-gov-800 p-12 text-white lg:flex">
         <div className="absolute inset-0 bg-linear-to-br from-gov-700 via-gov-800 to-gov-900" />
         <div className="relative z-10 flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/15 text-lg font-bold">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent-500 text-lg font-bold">
             B
           </div>
           <div className="leading-tight">

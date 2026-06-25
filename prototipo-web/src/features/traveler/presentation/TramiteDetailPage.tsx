@@ -56,6 +56,7 @@ export function TramiteDetailPage() {
               <Field label="Fecha de viaje" value={formatDate(tramite.documentacion.fechaViaje)} />
               <Field label="Viajero" value={tramite.viajero.nombre} />
               <Field label="Documento" value={tramite.viajero.documento} />
+              <Field label="Nacionalidad" value={tramite.viajero.nacionalidad} />
               <Field label="Motivo" value={tramite.documentacion.motivo || '—'} />
             </dl>
           </Card>

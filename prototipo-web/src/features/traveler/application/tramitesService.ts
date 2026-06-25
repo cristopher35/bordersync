@@ -25,7 +25,11 @@ export function createTramite(user: User, doc: DocumentacionInput, allTramites: 
   const tramite: Tramite = {
     id,
     travelerUserId: user.id,
-    viajero: { nombre: user.nombre, documento: user.documento, nacionalidad: 'Chilena' },
+    viajero: {
+      nombre: user.nombre,
+      documento: user.documento,
+      nacionalidad: user.nacionalidad || 'No especificada',
+    },
     documentacion: {
       destino: doc.destino.trim(),
       fechaViaje: doc.fechaViaje,

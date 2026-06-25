@@ -1,13 +1,16 @@
 import { type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { TextField } from '@/shared/ui/TextField'
+import { SelectField } from '@/shared/ui/SelectField'
 import { PasswordField } from '@/shared/ui/PasswordField'
 import { Button } from '@/shared/ui/Button'
 import { formatRut, cleanRut } from '@/shared/lib/validation'
+import { NACIONALIDADES } from '../domain/registration'
 import { useRegister } from '../application/useRegister'
 
 export function RegisterPage() {
   const { input, errors, setField, submit } = useRegister()
+  const esChileno = input.nacionalidad === 'Chilena'
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault()
@@ -37,18 +40,29 @@ export function RegisterPage() {
             error={errors.nombre}
             required
           />
+          <SelectField
+            label="Nacionalidad"
+            name="nacionalidad"
+            placeholder="Selecciona…"
+            value={input.nacionalidad}
+            onChange={(e) => setField('nacionalidad', e.target.value)}
+            error={errors.nacionalidad}
+            options={NACIONALIDADES.map((n) => ({ value: n, label: n }))}
+            required
+          />
           <TextField
-            label="Número de documento (RUN)"
+            label={esChileno ? 'RUN' : 'Pasaporte o documento de identidad'}
             name="documento"
-            placeholder="12.345.678-9"
+            placeholder={esChileno ? '12.345.678-9' : 'Ej. AB123456'}
             value={input.documento}
             onChange={(e) => setField('documento', e.target.value)}
             onBlur={(e) =>
+              esChileno &&
               cleanRut(e.target.value).length >= 2 &&
               setField('documento', formatRut(e.target.value))
             }
             error={errors.documento}
-            hint="Se valida el dígito verificador."
+            hint={esChileno ? 'Se valida el dígito verificador del RUN.' : undefined}
             required
           />
           <TextField

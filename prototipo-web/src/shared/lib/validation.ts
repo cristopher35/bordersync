@@ -53,13 +53,26 @@ export function formatRut(rut: string): string {
 }
 
 // ---------------------------------------------------------------------------
-// Patente vehicular (formato chileno: 2-4 letras + 2-4 dígitos, guion opcional)
+// Documento de identidad genérico (pasaporte o ID extranjero): alfanumérico,
+// admite puntos, guiones y espacios. Para chilenos se usa isValidRut aparte.
 // ---------------------------------------------------------------------------
 
-const PATENTE_RE = /^[A-Z]{2,4}-?[0-9]{2,4}$/
+export function isValidDocumento(value: string): boolean {
+  const v = value.trim()
+  return v.length >= 5 && /^[A-Za-z0-9.\- ]+$/.test(v)
+}
+
+// ---------------------------------------------------------------------------
+// Patente vehicular internacional: la Aduana recibe vehículos de distintos
+// países, así que se acepta cualquier placa alfanumérica (con espacios o
+// guiones), no solo el formato chileno.
+// ---------------------------------------------------------------------------
+
+const PATENTE_RE = /^[A-Z0-9][A-Z0-9\s-]{2,11}$/
 
 export function isValidPatente(value: string): boolean {
-  return PATENTE_RE.test(value.trim().toUpperCase())
+  const v = value.trim().toUpperCase()
+  return v.length >= 4 && PATENTE_RE.test(v)
 }
 
 // ---------------------------------------------------------------------------

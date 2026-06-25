@@ -26,7 +26,8 @@ export type PlacaDiplomatica = 'CD' | 'CC' | 'OI' | 'PAT'
 export interface User {
   id: string
   nombre: string
-  documento: string // RUN
+  documento: string // RUN (chilenos) o pasaporte / documento (extranjeros)
+  nacionalidad: string
   email: string
   /** Solo maqueta: en producción se guardaría como hash bcrypt (RNF 3.3.2). */
   password: string
