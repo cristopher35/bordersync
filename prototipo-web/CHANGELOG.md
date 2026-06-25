@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.12.0](https://github.com/cristopher35/bordersync/compare/v0.11.0...v0.12.0) (2026-06-25)
+
+
+### Bug Fixes
+
+* changelog ([20c9f90](https://github.com/cristopher35/bordersync/commit/20c9f9090fff0eea2fc11ffc55ddc11e89a69359))
+
 ## 0.11.0 (2026-06-25)
 
 
